@@ -1,0 +1,7 @@
+{
+  "name": "clubOrganizer",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
