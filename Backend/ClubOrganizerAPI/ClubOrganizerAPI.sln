@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClubOrganizerAPI", "ClubOrganizerAPI\ClubOrganizerAPI.csproj", "{B984758F-26E1-46B3-B955-3982829BAC41}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClubOrganizerAPI", "ClubOrganizerAPI\ClubOrganizerAPI.csproj", "{B984758F-26E1-46B3-B955-3982829BAC41}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Context", "Context\Context.csproj", "{5714F4C5-17B6-4A8E-8869-166B6B783A8E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utilities", "Utilities\Utilities.csproj", "{2F3CC67A-0768-4A21-BC70-0F1ECFD7646A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{B984758F-26E1-46B3-B955-3982829BAC41}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B984758F-26E1-46B3-B955-3982829BAC41}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B984758F-26E1-46B3-B955-3982829BAC41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5714F4C5-17B6-4A8E-8869-166B6B783A8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5714F4C5-17B6-4A8E-8869-166B6B783A8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5714F4C5-17B6-4A8E-8869-166B6B783A8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5714F4C5-17B6-4A8E-8869-166B6B783A8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F3CC67A-0768-4A21-BC70-0F1ECFD7646A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F3CC67A-0768-4A21-BC70-0F1ECFD7646A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F3CC67A-0768-4A21-BC70-0F1ECFD7646A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F3CC67A-0768-4A21-BC70-0F1ECFD7646A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

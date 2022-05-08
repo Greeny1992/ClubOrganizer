@@ -362,3 +362,5 @@ plugins
 *.swo
 *.log
 *.DS_Store
+
+MongoData/
