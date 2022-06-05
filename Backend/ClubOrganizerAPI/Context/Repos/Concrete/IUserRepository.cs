@@ -7,5 +7,7 @@ namespace Context.Repos
 
         Task<User> Login(String username, String password);
 
+        Task<User> AddGroupToUser(string userId, string groupId);
+
     }
 }

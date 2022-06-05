@@ -29,7 +29,7 @@ namespace Context.DAL
         public string Password { get; set; }
         public string HashedPassword { get; set; }
         public DateTime ValidTill { get; set; }
-        public IEnumerable<Group> Groups { get; set; }
+        public ICollection<Group> Groups { get; set; } = new List<Group>();
     }
 
     public enum Role

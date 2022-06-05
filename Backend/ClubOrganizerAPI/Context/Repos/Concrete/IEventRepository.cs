@@ -10,5 +10,9 @@ namespace Context.Repos.Concrete
     public interface IEventRepository : IMongoRepository<Event>
     {
         Task<Event> FindByName(string name);
+
+        Task<Event> UserAcceptEvent(string userId, string eventId);
+
+        Task<Event> UserCancleEvent(string userId, string eventId);
     }
 }

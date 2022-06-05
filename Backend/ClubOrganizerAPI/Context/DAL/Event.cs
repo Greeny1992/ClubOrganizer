@@ -14,7 +14,7 @@ namespace Context.DAL
         public DateTime StartDateTime { get; set; }
         public DateTime EndDateTime { get; set; }
         public bool Active { get; set; }
-        public IEnumerable<User> AcceptUsers { get; set; }
-        public IEnumerable<User> CancelUsers { get; set; }
+        public ICollection<User> AcceptUsers { get; set; } = new List<User>();
+        public ICollection<User> CancelUsers { get; set; } = new List<User>();
     }
 }

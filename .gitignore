@@ -362,6 +362,6 @@ plugins
 *.swo
 *.log
 *.DS_Store
-/MongoData/diagnostic.data
-/MongoData/journal
-/MongoData
+MongoData/diagnostic.data
+MongoData/journal/*
+MongoData/*

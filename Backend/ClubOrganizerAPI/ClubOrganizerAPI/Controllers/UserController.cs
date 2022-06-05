@@ -106,5 +106,28 @@ namespace ClubOrganizerAPI.Controllers
             }
 
         }
+
+        [HttpPost("AddGroupToUser")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<User>> AddGroupToUser([Required][FromQuery] String groupId, [Required][FromQuery] String userId)
+        {
+
+
+            User usr = await mongo.User.AddGroupToUser(userId, groupId);
+
+
+            if (usr != null)
+            {
+
+
+                return usr;
+            }
+            else
+            {
+                return NotFound();
+            }
+
+        }
     }
 }
