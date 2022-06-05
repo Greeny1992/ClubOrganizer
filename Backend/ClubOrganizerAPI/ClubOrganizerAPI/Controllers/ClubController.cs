@@ -56,7 +56,94 @@ namespace ClubOrganizerAPI.Controllers
             {
                 return NotFound();
             }
+        }
+
+        [HttpPost("CreateEventForClub")]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Club))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<Club>> CreateEventForClub([Required][FromBody] Event ev, [Required][FromQuery] string clubId)
+        {
+            Club cl = await mongo.Club.AddEventToClub(clubId, ev);
+
+
+            if (cl != null)
+            {
+
+
+                return cl;
+            }
+            else
+            {
+                return NotFound();
+            }
 
         }
+
+        [HttpPost("CreateGroupForClub")]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Club))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<Club>> CreateGroupForClub([Required][FromBody] Group group, [Required][FromQuery] string clubId)
+        {
+            Club cl = await mongo.Club.AddGroupToClub(clubId, group);
+
+
+            if (cl != null)
+            {
+
+
+                return cl;
+            }
+            else
+            {
+                return NotFound();
+            }
+
+        }
+
+        [HttpPost("AddMemberToClub")]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Club))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<Club>> CreateGroupForClub([Required][FromQuery] string userId, [Required][FromQuery] string clubId)
+        {
+            Club cl = await mongo.Club.AddUserToClub(clubId, userId);
+
+            if (cl != null)
+            {
+
+
+                return cl;
+            }
+            else
+            {
+                return NotFound();
+            }
+
+        }
+
+        [HttpGet("GetClub")]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Club))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<Club>> GetClub([Required][FromQuery] string clubId)
+        {
+            Club cl = await mongo.Club.FindByIdAsync(clubId);
+
+            if (cl != null)
+            {
+
+
+                return cl;
+            }
+            else
+            {
+                return NotFound();
+            }
+
+        }
+
+
     }
 }
