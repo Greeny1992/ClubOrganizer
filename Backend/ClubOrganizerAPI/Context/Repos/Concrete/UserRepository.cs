@@ -22,32 +22,56 @@ namespace Context.Repos
             _passwordHasher = new PasswordHasher(_hashingOptions);
         }
 
-        public async Task<User> Login(string username, string password)
+
+        public async override Task<User> InsertOneAsync(User document)
         {
-            var user = await this.FindOneAsync(u => u.UserName == username);
-            if(user != null)
-            {
-                var test = _passwordHasher.Check(user.HashedPassword, password);
-                if(test == (true,false))
-                {
-                    return user;
-                }else
-                {
-                    log.Error("Wrong Password");
-                    return null;
-                };
-            }
-            this.log.Error(username + "does not exist");
-            return null;
+            SetUser(document);
+            document = await base.InsertOneAsync(document);
+            return document;
         }
 
-        public override async Task<User> InsertOrUpdateOneAsync(User u)
+        public async Task<User> Login(string username, string password)
         {
-            if(u.Password != null)
-                u.HashedPassword = _passwordHasher.Hash(u.Password);
-            await u.SaveAsync();
 
-            return u;
+            User fromdb = await base.FindOneAsync(x => x.UserName == username);
+
+            if (fromdb != null)
+            {
+                var verified = _passwordHasher.Check(fromdb.HashedPassword, password);
+
+                if (verified == (true,false))
+                {
+
+                    return fromdb;
+
+                }
+                else
+                {
+                    log.Warning("Cannot login " + username + " Wrong password");
+                }
+
+            }
+            else
+            {
+                log.Warning("User " + username + " not available");
+            }
+
+            return null;
+
+        }
+
+        public async override Task<User> UpdateOneAsync(User document)
+        {
+            SetUser(document);
+            document = await base.UpdateOneAsync(document);
+            return document;
+        }
+
+
+        private void SetUser(User document)
+        {
+            document.HashedPassword = _passwordHasher.Hash(document.Password);
+
         }
 
 

@@ -13,6 +13,10 @@ namespace Context.Repos
 
         Task<TEntity> FindByIdAsync(String id);
 
+        Task<TEntity> InsertOneAsync(TEntity document);
+
+        Task<TEntity> UpdateOneAsync(TEntity document);
+
         Task<TEntity> InsertOrUpdateOneAsync(TEntity document);
 
         Task DeleteOneAsync(Expression<Func<TEntity, bool>> filterExpression);

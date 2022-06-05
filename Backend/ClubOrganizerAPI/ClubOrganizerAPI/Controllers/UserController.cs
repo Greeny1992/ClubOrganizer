@@ -1,5 +1,5 @@
-﻿using BackendAPI.RequestModels;
-using BackendAPI.ResponseModels;
+﻿using ClubOrganizerAPI.RequestModels;
+using ClubOrganizerAPI.ResponseModels;
 using Context;
 using Context.DAL;
 using Context.UnitOfWork;
@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
-namespace BackendAPI.Controllers
+namespace ClubOrganizerAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -37,7 +37,6 @@ namespace BackendAPI.Controllers
 
 
         [HttpPost("CreateUser")]
-        //[Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<User>> CreateUser([Required][FromBody] User cred)

@@ -1,6 +1,6 @@
 ﻿using Context.DAL;
 
-namespace BackendAPI.ResponseModels
+namespace ClubOrganizerAPI.ResponseModels
 {
     public class LoginResponse
     {

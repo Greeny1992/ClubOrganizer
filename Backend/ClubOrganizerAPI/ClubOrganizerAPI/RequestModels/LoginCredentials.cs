@@ -1,4 +1,4 @@
-﻿namespace BackendAPI.RequestModels
+﻿namespace ClubOrganizerAPI.RequestModels
 {
     public class LoginCredentials
     {

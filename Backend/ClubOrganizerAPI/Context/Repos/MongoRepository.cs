@@ -9,7 +9,8 @@ namespace Context.Repos
 {
     public class MongoRepository<TEntity> : IMongoRepository<TEntity> where TEntity : MongoDocument
     {
-        public ILogger log = Utilities.Logger.ContextLog<MongoDocument>();
+        protected ILogger log = Utilities.Logger.ContextLog<MongoDocument>();
+
         private readonly IMongoCollection<TEntity> _collection;
 
         public MongoRepository(MongoDBContext Context)
@@ -17,42 +18,32 @@ namespace Context.Repos
             _collection = Context.DataBase.GetCollection<TEntity>(typeof(TEntity).Name.ToString());
         }
 
-        public Task DeleteByIdAsync(string id)
+        public IMongoCollection<TEntity> Collection
         {
-            return Task.Run(() =>
+            get
             {
-                var objectId = new ObjectId(id);
-                var filter = Builders<TEntity>.Filter.Eq("_id", objectId);
-                _collection.FindOneAndDeleteAsync(filter);
-            });
+                return _collection;
+            }
         }
 
-        public Task DeleteManyAsync(Expression<Func<TEntity, bool>> filterExpression)
+
+
+        public virtual IQueryable<TEntity> AsQueryable()
         {
-            return Task.Run(() => _collection.DeleteManyAsync(filterExpression));
+            return _collection.AsQueryable();
         }
 
-        public Task DeleteOneAsync(Expression<Func<TEntity, bool>> filterExpression)
-        {
-            return Task.Run(() => _collection.FindOneAndDeleteAsync(filterExpression));
-        }
-
-        public IEnumerable<TEntity> FilterBy(Expression<Func<TEntity, bool>> filterExpression)
+        public virtual IEnumerable<TEntity> FilterBy(
+            Expression<Func<TEntity, bool>> filterExpression)
         {
             return _collection.Find(filterExpression).ToEnumerable();
         }
 
-        public async Task<TEntity> FindByIdAsync(String id)
+        public virtual IEnumerable<TProjected> FilterBy<TProjected>(
+            Expression<Func<TEntity, bool>> filterExpression,
+            Expression<Func<TEntity, TProjected>> projectionExpression)
         {
-            var objectId = new ObjectId(id);
-            FilterDefinition<TEntity> filterDefinition = Builders<TEntity>.Filter.Eq("_id", objectId);
-            return await _collection.Find(filterDefinition).SingleOrDefaultAsync();
-        }
-
-        public Task<TEntity> FindOneAsync(Expression<Func<TEntity, bool>> filterExpression)
-        {
-
-            return Task.Run(() => _collection.Find(filterExpression).FirstOrDefaultAsync());
+            return _collection.Find(filterExpression).Project(projectionExpression).ToEnumerable();
         }
 
         public virtual TEntity FindOne(Expression<Func<TEntity, bool>> filterExpression)
@@ -60,19 +51,101 @@ namespace Context.Repos
             return _collection.Find(filterExpression).FirstOrDefault();
         }
 
-        public virtual async Task<TEntity> InsertOrUpdateOneAsync(TEntity document)
+        public async virtual Task<TEntity> FindOneAsync(Expression<Func<TEntity, bool>> filterExpression)
+        {
+            return await _collection.Find(filterExpression).FirstOrDefaultAsync();
+        }
+
+        public virtual TEntity FindById(string id)
+        {
+            var objectId = ObjectId.Parse(id);
+            var filter = Builders<TEntity>.Filter.Eq(doc => doc.ID, id);
+            return _collection.Find(filter).SingleOrDefault();
+        }
+
+        public async virtual Task<TEntity> FindByIdAsync(string id)
+        {
+
+            var objectId = ObjectId.Parse(id);
+            var filter = Builders<TEntity>.Filter.Eq(doc => doc.ID, id);
+            return await _collection.Find(filter).SingleOrDefaultAsync();
+
+        }
+
+        public async virtual Task<TEntity> InsertOneAsync(TEntity document)
         {
             try
             {
+                //await _collection.InsertOneAsync(document);
+
                 await document.SaveAsync();
                 return document;
             }
-            catch (Exception ex)
+            catch (MongoWriteException ex)
             {
-                log.Error("Geht ned");
+                log.Error("Error while saving", ex);
+            }
+            catch (Exception e)
+            {
+                log.Error("Error while saving", e);
+
+            }
+            return default;
+        }
+
+
+        public virtual async Task<TEntity> UpdateOneAsync(TEntity document)
+        {
+            var filter = Builders<TEntity>.Filter.Eq(doc => doc.ID, document.ID);
+            await _collection.FindOneAndReplaceAsync(filter, document);
+
+            return document;
+        }
+
+        public async Task DeleteOneAsync(Expression<Func<TEntity, bool>> filterExpression)
+        {
+            await _collection.FindOneAndDeleteAsync(filterExpression);
+        }
+
+
+        public async Task DeleteByIdAsync(string id)
+        {
+
+            var objectId = new ObjectId(id);
+            var filter = Builders<TEntity>.Filter.Eq(doc => doc.ID, id);
+            await _collection.FindOneAndDeleteAsync(filter);
+
+        }
+
+
+
+        public async Task DeleteManyAsync(Expression<Func<TEntity, bool>> filterExpression)
+        {
+            await _collection.DeleteManyAsync(filterExpression);
+        }
+
+
+        public async Task<TEntity> InsertOrUpdateOneAsync(TEntity document)
+        {
+            if (document != null && document.ID != null)
+            {
+                TEntity item = FindById(document.ID.ToString());
+
+                if (item == null)
+                {
+                    await InsertOneAsync(document);
+                }
+                else
+                {
+                    await UpdateOneAsync(document);
+                }
+            }
+            else
+            {
+                await InsertOneAsync(document);
             }
 
-            return default;
+            return document;
         }
     }
 }
