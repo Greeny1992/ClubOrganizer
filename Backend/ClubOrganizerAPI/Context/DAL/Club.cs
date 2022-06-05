@@ -9,10 +9,10 @@ namespace Context.DAL
 {
     public class Club : MongoDocument
     {
-        public string? Name { get; set; }  
-        public Many<User> Members { get; set; } = new Many<User>();
-        public Many<Group> Groups { get; set; } = new Many<Group>();
-        public Many<Event> Events { get; set; } = new Many<Event>();
+        public string Name { get; set; }  
+        public IEnumerable<User> Members { get; set; }
+        public IEnumerable<Group> Groups { get; set; }
+        public IEnumerable<Event> Events { get; set; }
 
     }
 }
