@@ -1,4 +1,5 @@
 ﻿using Context.Repos;
+using Context.Repos.Concrete;
 using Context.Settings;
 using Microsoft.Extensions.Configuration;
 
@@ -19,6 +20,21 @@ namespace Context.UnitOfWork
         public IUserRepository User
         {
             get { return new UserRepository(Context); }
+        }
+
+        public IClubRepository Club
+        {
+            get { return new ClubRepository(Context); }
+        }
+
+        public IEventRepository Event
+        {
+            get { return new EventRepository(Context); }
+        }
+
+        public IGroupRepository Group
+        {
+            get { return new GroupRepository(Context); }
         }
     }
 }

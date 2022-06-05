@@ -1,5 +1,8 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Entities;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Context.DAL
 {
@@ -19,13 +22,14 @@ namespace Context.DAL
         }
 
         [BsonRepresentation(BsonType.String)]
+        [JsonConverter(typeof(StringEnumConverter))]
         public Role Role { get; set; }
 
         [BsonIgnore]
         public string Password { get; set; }
         public string HashedPassword { get; set; }
         public DateTime ValidTill { get; set; }
-
+        public IEnumerable<Group> Groups { get; set; }
     }
 
     public enum Role
