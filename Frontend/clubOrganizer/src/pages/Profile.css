@@ -1,0 +1,13 @@
+.centered{
+    justify-content: center;
+    text-align: -webkit-center;
+}
+
+.avatar{
+    height: 200px;
+    width: 200px;
+}
+
+.header{
+    font-size: 30px;
+}
