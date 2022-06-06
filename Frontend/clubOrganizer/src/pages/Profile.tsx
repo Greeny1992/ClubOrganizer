@@ -82,12 +82,12 @@ const Profile: React.FC = () => {
         </IonCol>
       </IonRow>
 
-      <IonRow className='header'>
+      <IonRow className='header centered'>
         Account
       </IonRow>
 
-      <IonRow>
-      <form  onSubmit={ handleSubmit(onSubmit)  }>
+      <IonRow className='centered'>
+      <form className='table'  onSubmit={ handleSubmit(onSubmit)  }>
       <IonLabel>Firstname: </IonLabel>
       <IonItem>
       

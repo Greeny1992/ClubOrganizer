@@ -1,6 +1,7 @@
 .centered{
     justify-content: center;
     text-align: -webkit-center;
+    place-content: center;
 }
 
 .avatar{
@@ -10,4 +11,8 @@
 
 .header{
     font-size: 30px;
+}
+
+.table{
+    width: 400px;
 }
