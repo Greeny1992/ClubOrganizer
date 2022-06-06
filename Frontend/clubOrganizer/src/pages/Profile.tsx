@@ -139,7 +139,7 @@ const Profile: React.FC = () => {
           {...register("password", {required:true})}
           placeholder="enter password"
           name="password"
-          type='text'
+          type='password'
         >
         </IonInput>
       </IonItem>
