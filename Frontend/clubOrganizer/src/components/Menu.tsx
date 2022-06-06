@@ -11,8 +11,6 @@ import {
   IonMenu,
   IonMenuToggle,
   IonNote,
-  IonTabButton,
-  IonTabBar,
 } from '@ionic/react';
 
 import { useLocation } from 'react-router-dom';
@@ -25,7 +23,7 @@ import {
   logInOutline,
   logOutSharp,
   logOutOutline,
-  addSharp, addOutline, alarmOutline, alarmSharp, alertOutline, alertSharp, logIn, personAddOutline, personAddSharp, manOutline
+  addSharp, addOutline, alarmOutline, alarmSharp, alertOutline, alertSharp, logIn, personAddOutline, personAddSharp
 } from 'ionicons/icons';
 import './Menu.css';
 import React, { useState, useEffect } from "react";
@@ -43,8 +41,8 @@ interface AppPage {
 
 const appPages: AppPage[] = [
   {
-    title: 'Club',
-    url: '/club',
+    title: 'Login',
+    url: '/login',
     iosIcon: homeOutline,
     mdIcon: homeSharp
   }
@@ -79,29 +77,29 @@ const Menu: React.FC = () => {
   {
     securityItem = {
       title: 'Logout ' + user?.username,
-      url: '/home',
+      url: '/login',
       iosIcon: logOutOutline,
       mdIcon: logOutSharp,
       onClick: () => {dispatch(loggedOut())}
     }
 
     AddMenu({
-      title: 'Profile',
-      url : '/profile',
+      title: 'Termine',
+      url : '/termine',
       iosIcon : listOutline,
       mdIcon : listSharp
     })
 
     AddMenu({
-      title: 'Club',
-      url : '/club',
+      title: 'Profile',
+      url : '/profile',
       iosIcon : addOutline,
       mdIcon : addSharp
     })
 
     AddMenu({
-      title: 'Termine',
-      url : '/termine',
+      title: 'Club',
+      url : '/club',
       iosIcon : alarmOutline,
       mdIcon : alarmSharp
     })
@@ -133,27 +131,45 @@ const Menu: React.FC = () => {
   }
 
   return (
-    <IonTabBar slot="bottom">
+      <IonMenu side='start' contentId="main" type="overlay">
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Menu</IonTitle>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent>
+          <IonListHeader>Welcome</IonListHeader>
+          <IonNote>{isNotExpired(authentication) ? 'Hello ' + user?.username : 'Not Logged in'}</IonNote>
+          <IonList>
             {appPages.map((appPage, index) => {
               return (
-                  <IonTabButton tab={appPage.title} href={appPage.url}>
-                       <IonIcon icon={manOutline} />
-                       <IonLabel>{appPage.title}</IonLabel>
-                      </IonTabButton>
-                    
+                  <IonMenuToggle key={index} autoHide={false}>
+                    <IonItem routerLink={appPage.url} routerDirection="none">
+                      <IonIcon slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
+                      <IonLabel>{appPage.title}</IonLabel>
+                    </IonItem>
+                  </IonMenuToggle>
               );
             })}
             {secureAppPage.map((appPage, index) => {
               return (
-                 <IonTabButton tab={appPage.title} href={appPage.url}>
-                        <IonIcon icon={manOutline} />
-                        <IonLabel>{appPage.title}</IonLabel>
-                  </IonTabButton>
-                    
+                  <IonMenuToggle key={index} autoHide={false}>
+                    <IonItem className={location.pathname === appPage.url ? 'selected' : ''} routerLink={appPage.url} routerDirection="none" lines="none" detail={false}>
+                      <IonIcon slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
+                      <IonLabel>{appPage.title}</IonLabel>
+                    </IonItem>
+                  </IonMenuToggle>
               );
             })}
-    </IonTabBar>
-        
+            <IonMenuToggle key={'sec2'} auto-hide="false">
+              <IonItem routerLink={securityItem.url} lines="none" onClick={securityItem.onClick} >
+                <IonIcon slot="start" ios={securityItem.iosIcon} md={securityItem.mdIcon} />
+                <IonLabel>{securityItem.title}</IonLabel>
+              </IonItem>
+            </IonMenuToggle>
+          </IonList>
+        </IonContent>
+      </IonMenu>
   );
 };
 

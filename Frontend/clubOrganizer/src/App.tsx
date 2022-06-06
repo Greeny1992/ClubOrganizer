@@ -3,7 +3,9 @@ import {
   IonApp,
   IonIcon,
   IonLabel,
+  IonMenu,
   IonRouterOutlet,
+  IonSplitPane,
   IonTabBar,
   IonTabButton,
   IonTabs,
@@ -36,6 +38,7 @@ import './theme/variables.css';
 import Terminplanung from './pages/Tab3';
 import { SecureRoute } from './components/SecurePage';
 import Login from './pages/Login/Login';
+import Menu from './components/Menu';
 
 
 setupIonicReact();
@@ -43,6 +46,27 @@ setupIonicReact();
 const App: React.FC = () => (
   <IonApp>
     <IonReactRouter>
+          
+          <Menu />
+            <IonRouterOutlet id="main">
+              <Route path="/login" component={Login} exact={true} />
+              <SecureRoute path="/profile" component={Profile} exact={true} />
+              <SecureRoute path="/club" component={Club} exact={true} />
+              <SecureRoute path="/termine" component={Terminplanung} exact={true} />
+              <Route path="/" exact={true}>
+                <Redirect to="/profile" />
+              </Route>
+            </IonRouterOutlet>
+          
+        </IonReactRouter>
+  </IonApp>
+);
+
+export default App;
+
+
+
+/* <IonReactRouter>
       <IonTabs>
         <IonRouterOutlet>
           <Route exact path="/profile">
@@ -75,8 +99,4 @@ const App: React.FC = () => (
           </IonTabButton>
         </IonTabBar>
       </IonTabs>
-    </IonReactRouter>
-  </IonApp>
-);
-
-export default App;
+    </IonReactRouter> */
