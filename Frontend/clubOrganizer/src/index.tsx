@@ -3,13 +3,36 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
+import { Provider } from 'react-redux';
+import store from './services/store';
+import { combineReducers } from 'redux';
+import rootReducer from './services/reducers';
+import { loadUserData } from './services/rest/security';
+import { loggedIn } from './services/actions/security';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+const AppReducer = combineReducers({
+  rootReducer,
+
+})
+
+loadUserData()
+    .then(info =>  {
+        console.log('Loaded data: ' + JSON.stringify(info));
+        return info.user && info.authentication ? store.dispatch(loggedIn({user: info.user, authentication: info.authentication})): false
+    })
+    .catch(e => console.log(e))
+
+const render = () => {
+  const App = require("./App").default;
+  ReactDOM.render(
+      <Provider store={store}>
+          <App />
+      </Provider>,
+      document.getElementById("root")
+  );
+};
+
+render();
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

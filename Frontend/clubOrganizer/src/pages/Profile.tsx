@@ -1,6 +1,6 @@
 import { IonAvatar, IonButton, IonCard, IonCardContent, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonPage, IonRow, IonSelect, IonSelectOption, IonTitle, IonToolbar } from '@ionic/react';
 import { alertCircleOutline, text } from 'ionicons/icons';
-import {User} from '../types/types'
+import {User, UserPatch} from '../types/types'
 import './Profile.css';
 import {useForm, Controller} from 'react-hook-form'
 import { useState } from 'react';
@@ -8,7 +8,7 @@ import { useState } from 'react';
 const Profile: React.FC = () => {
  
 
-  const initialValues:User = {
+  const initialValues:UserPatch = {
     firstname: 'john',
     lastname: 'doe',
     username: 'GigaJohn',
@@ -34,24 +34,6 @@ const Profile: React.FC = () => {
     console.log(username, ',',firstname, ',',lastname);
     
   }
-
-  const patchUserForm = ()=>{
-    return (
-      
-	    <IonItem>
-      <IonLabel>Gender</IonLabel>
-        <IonSelect
-          placeholder="Select One"
-          name="gender"
-        >
-          <IonSelectOption value="FEMALE">Female</IonSelectOption>
-          <IonSelectOption value="MALE">Male</IonSelectOption>
-        </IonSelect>
-      </IonItem>
-    
-    );
-  }
-
 
   return (
     <IonPage>

@@ -34,6 +34,8 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import Terminplanung from './pages/Tab3';
+import { SecureRoute } from './components/SecurePage';
+import Login from './pages/Login/Login';
 
 
 setupIonicReact();
@@ -43,29 +45,31 @@ const App: React.FC = () => (
     <IonReactRouter>
       <IonTabs>
         <IonRouterOutlet>
-          <Route exact path="/tab1">
+          <Route exact path="/profile">
             <Profile />
           </Route>
-          <Route exact path="/tab2">
+          <SecureRoute exact path="/club">
             <Club />
-          </Route>
-          <Route path="/tab3">
+          </SecureRoute>
+          <SecureRoute path="/termine">
             <Terminplanung />
-          </Route>
+          </SecureRoute>
+
+          <Route path="/login" component={Login}/>
           <Route exact path="/">
-            <Redirect to="/tab1" />
+            <Redirect to="/club" />
           </Route>
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
-          <IonTabButton tab="tab1" href="/tab1">
+          <IonTabButton tab="profile" href="/profile">
             <IonIcon icon={manOutline} />
             <IonLabel>Profile</IonLabel>
           </IonTabButton>
-          <IonTabButton tab="tab2" href="/tab2">
+          <IonTabButton tab="club" href="/club">
             <IonIcon icon={homeOutline} />
             <IonLabel>Club</IonLabel>
           </IonTabButton>
-          <IonTabButton tab="tab3" href="/tab3">
+          <IonTabButton tab="termine" href="/termine">
             <IonIcon icon={addOutline} />
             <IonLabel>Terminplanung</IonLabel>
           </IonTabButton>

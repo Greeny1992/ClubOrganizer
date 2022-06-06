@@ -1,5 +1,4 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../components/ExploreContainer';
 import './Tab3.css';
 
 const Terminplanung: React.FC = () => {
@@ -16,7 +15,7 @@ const Terminplanung: React.FC = () => {
             <IonTitle size="large">Terminplanung</IonTitle>
           </IonToolbar>
         </IonHeader>
-        
+
       </IonContent>
     </IonPage>
   );
