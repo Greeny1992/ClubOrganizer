@@ -75,10 +75,10 @@ const Profile: React.FC = () => {
         </IonCol>
         <IonCol>
         <IonRow className='header'>GigaJohn</IonRow>
-        <IonRow>john.doe@example.com - Administrator</IonRow>
+        <IonRow>john.doe@example.com</IonRow>
         <IonRow>John Doe</IonRow>
-        <IonRow>Eckertstraße 30i</IonRow>
-        <IonRow>8020, Graz</IonRow>
+        <IonRow>Rolle: Administrator</IonRow>
+        <IonRow>Gruppen: Klarinetten, Vorstand</IonRow>
         </IonCol>
       </IonRow>
 
