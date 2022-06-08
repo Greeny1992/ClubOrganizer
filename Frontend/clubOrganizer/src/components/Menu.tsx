@@ -23,7 +23,7 @@ import {
   logInOutline,
   logOutSharp,
   logOutOutline,
-  addSharp, addOutline, alarmOutline, alarmSharp, alertOutline, alertSharp, logIn, personAddOutline, personAddSharp
+  addSharp, addOutline, alarmOutline, alarmSharp, alertOutline, alertSharp, logIn, personAddOutline, personAddSharp, addCircleOutline, addCircle, documentOutline, documentSharp, layersOutline, layersSharp
 } from 'ionicons/icons';
 import './Menu.css';
 import React, { useState, useEffect } from "react";
@@ -47,10 +47,21 @@ var secureAppPage: AppPage[] = [
 
 ];
 
+let adminFunctions: AppPage[] = [
+
+]
+
 function AddMenu(item : AppPage)
 {
   if (secureAppPage.some(e => e.url === item.url) == false) {
     secureAppPage.push(item );
+  }
+}
+
+function AddAdminMenu(item : AppPage)
+{
+  if (adminFunctions.some(e => e.url === item.url) == false) {
+    adminFunctions.push(item );
   }
 }
 
@@ -98,7 +109,7 @@ const Menu: React.FC = () => {
     })
 
     if(user!.role == "Admin") {
-      AddMenu(
+      AddAdminMenu(
           {
               title: 'Users',
               url: '/users',
@@ -106,6 +117,24 @@ const Menu: React.FC = () => {
               mdIcon: personAddSharp
           }
       );
+
+      AddAdminMenu(
+        {
+            title: 'Events',
+            url: '/events',
+            iosIcon: documentOutline,
+            mdIcon: documentSharp
+        }
+    );
+
+    AddAdminMenu(
+      {
+          title: 'Gruppen',
+          url: '/groups',
+          iosIcon: layersOutline,
+          mdIcon: layersSharp
+      }
+  );
   }
 
   }
@@ -131,7 +160,7 @@ const Menu: React.FC = () => {
           </IonToolbar>
         </IonHeader>
         <IonContent>
-          <IonListHeader>{isNotExpired(authenticationInformation)? user?.userName : 'Bitte logge dich ein, oder registriere dich, um auf deinen Club zugreifen zu können'}</IonListHeader>
+          <IonListHeader className='centered'>{isNotExpired(authenticationInformation)? user?.userName : 'Bitte logge dich ein, oder registriere dich, um auf deinen Club zugreifen zu können'}</IonListHeader>
 
           <IonList>
             {appPages.map((appPage, index) => {
@@ -144,6 +173,7 @@ const Menu: React.FC = () => {
                   </IonMenuToggle>
               );
             })}
+            <IonNote className='menu_note'>Clubname?</IonNote>
             {secureAppPage.map((appPage, index) => {
               return (
                   <IonMenuToggle key={index} autoHide={false}>
@@ -154,13 +184,25 @@ const Menu: React.FC = () => {
                   </IonMenuToggle>
               );
             })}
-            <IonMenuToggle key={'sec2'} auto-hide="false">
+            <IonNote className='menu_note'>{user!.role === 'Admin' ? 'Manage deinen Club': ''}</IonNote>
+            {adminFunctions.map((appPage, index) => {
+              return (
+                  <IonMenuToggle key={index} autoHide={false}>
+                    <IonItem className={location.pathname === appPage.url ? 'selected' : ''} routerLink={appPage.url} routerDirection="none" lines="none" detail={false}>
+                      <IonIcon slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
+                      <IonLabel>{appPage.title}</IonLabel>
+                    </IonItem>
+                  </IonMenuToggle>
+              );
+            })}
+            
+          </IonList>
+          <IonMenuToggle className='lock_bottom' key={'sec2'} auto-hide="false">
               <IonItem routerLink={securityItem.url} lines="none" onClick={securityItem.onClick} >
                 <IonIcon slot="start" ios={securityItem.iosIcon} md={securityItem.mdIcon} />
                 <IonLabel>{securityItem.title}</IonLabel>
               </IonItem>
             </IonMenuToggle>
-          </IonList>
         </IonContent>
       </IonMenu>
   );
