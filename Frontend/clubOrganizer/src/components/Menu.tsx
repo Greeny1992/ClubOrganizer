@@ -149,6 +149,7 @@ const Menu: React.FC = () => {
         }
 
     secureAppPage = [];
+    adminFunctions = [];
 
   }
 
@@ -184,7 +185,7 @@ const Menu: React.FC = () => {
                   </IonMenuToggle>
               );
             })}
-            <IonNote className='menu_note'>{user!.role === 'Admin' ? 'Manage deinen Club': ''}</IonNote>
+            <IonNote className='menu_note'>{user?.role === 'Admin' ? 'Manage deinen Club': ''}</IonNote>
             {adminFunctions.map((appPage, index) => {
               return (
                   <IonMenuToggle key={index} autoHide={false}>

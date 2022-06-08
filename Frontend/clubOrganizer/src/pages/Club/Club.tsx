@@ -1,5 +1,4 @@
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import Menu from '../components/Menu';
 import './Club.css';
 
 const Club: React.FC = (props) => {

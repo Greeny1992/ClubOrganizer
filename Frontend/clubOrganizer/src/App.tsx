@@ -13,8 +13,8 @@ import {
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { addOutline, homeOutline, manOutline, square } from 'ionicons/icons';
-import Club from './pages/Club';
-import Profile from './pages/Profile';
+import Club from './pages/Club/Club';
+import Profile from './pages/Profile/Profile';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -34,10 +34,12 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
-import Terminplanung from './pages/Termine';
+import Terminplanung from './pages/Termine/Termine';
 import { SecureRoute } from './components/SecurePage';
 import Login from './pages/Login/Login';
 import Menu from './components/Menu';
+import Users from './pages/AdminPages/Users/Users';
+import Register from './pages/AdminPages/Users/Register';
 
 
 setupIonicReact();
@@ -51,6 +53,9 @@ const App: React.FC = () => (
               <SecureRoute path="/profile" component={Profile} exact={true} />
               <SecureRoute path="/club" component={Club} exact={true} />
               <SecureRoute path="/termine" component={Terminplanung} exact={true} />
+              <SecureRoute path="/users"  component={Users} exact={true} />
+              <SecureRoute path="/users/add"  component={Register("add")} exact={true} />
+              <SecureRoute path="/users/edit/:id"  component={Register("edit")} exact={true} />
               <Route path="/" exact={true}>
                 <Redirect to="/profile" />
               </Route>
