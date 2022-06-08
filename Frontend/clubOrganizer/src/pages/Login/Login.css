@@ -4,5 +4,12 @@
 
 .login_form_card{
     width: 350px;
-    top: 25%;
+    
+}
+
+.place_center{
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

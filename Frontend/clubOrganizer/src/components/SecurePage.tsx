@@ -10,7 +10,7 @@ export interface OwnProps extends RouteProps {
 
 export const SecureRoute: FunctionComponent<OwnProps> = ({ component, extraArgs, ...rest }: OwnProps) => {
 
-    const token = useSelector<RootState, AuthenticationInformation | null>(state => state.user.authentication);
+    const token = useSelector<RootState, AuthenticationInformation | null>(state => state.user.authenticationInformation);
 
     return <Route {...rest} render={props => {
         if (isNotExpired(token)) {

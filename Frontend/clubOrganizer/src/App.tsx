@@ -15,7 +15,6 @@ import { IonReactRouter } from '@ionic/react-router';
 import { addOutline, homeOutline, manOutline, square } from 'ionicons/icons';
 import Club from './pages/Club';
 import Profile from './pages/Profile';
-import Tab3 from './pages/Tab3';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -35,7 +34,7 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
-import Terminplanung from './pages/Tab3';
+import Terminplanung from './pages/Termine';
 import { SecureRoute } from './components/SecurePage';
 import Login from './pages/Login/Login';
 import Menu from './components/Menu';
@@ -45,8 +44,7 @@ setupIonicReact();
 
 const App: React.FC = () => (
   <IonApp>
-    <IonReactRouter>
-          
+    <IonReactRouter>      
           <Menu />
             <IonRouterOutlet id="main">
               <Route path="/login" component={Login} exact={true} />
@@ -63,40 +61,3 @@ const App: React.FC = () => (
 );
 
 export default App;
-
-
-
-/* <IonReactRouter>
-      <IonTabs>
-        <IonRouterOutlet>
-          <Route exact path="/profile">
-            <Profile />
-          </Route>
-          <SecureRoute exact path="/club">
-            <Club />
-          </SecureRoute>
-          <SecureRoute path="/termine">
-            <Terminplanung />
-          </SecureRoute>
-
-          <Route path="/login" component={Login}/>
-          <Route exact path="/">
-            <Redirect to="/club" />
-          </Route>
-        </IonRouterOutlet>
-        <IonTabBar slot="bottom">
-          <IonTabButton tab="profile" href="/profile">
-            <IonIcon icon={manOutline} />
-            <IonLabel>Profile</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="club" href="/club">
-            <IonIcon icon={homeOutline} />
-            <IonLabel>Club</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="termine" href="/termine">
-            <IonIcon icon={addOutline} />
-            <IonLabel>Terminplanung</IonLabel>
-          </IonTabButton>
-        </IonTabBar>
-      </IonTabs>
-    </IonReactRouter> */

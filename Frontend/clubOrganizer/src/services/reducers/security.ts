@@ -5,8 +5,8 @@ import {AuthenticationResponse} from "../../types/types";
 import {clearUserData} from "../rest/security";
 
 const initialState : AuthenticationResponse = {
-        user: { firstname:"", lastname:"", username: "", email: "", password : "", role:"", active:false},
-        authentication: { token: "", expirationDate: 0}
+        user: { firstname:"", lastname:"", userName: "", email: "", password : "", role:"", active:false},
+        authenticationInformation: { token: "", expirationDate: 0}
 }
 
 
@@ -16,6 +16,6 @@ export const user = createReducer<AuthenticationResponse, AnyAction>(initialStat
     })
     .handleAction(loggedOut, (state, action) => {
             clearUserData();
-            return ({ user: null, authentication: null })
+            return ({ user: null, authenticationInformation: null })
         }
     )

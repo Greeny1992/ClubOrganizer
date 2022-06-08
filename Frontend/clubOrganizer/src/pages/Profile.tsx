@@ -1,11 +1,12 @@
-import { IonAvatar, IonButton, IonCard, IonCardContent, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonPage, IonRow, IonSelect, IonSelectOption, IonTitle, IonToolbar } from '@ionic/react';
+import { IonAvatar, IonButton, IonButtons, IonCard, IonCardContent, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonMenuButton, IonPage, IonRow, IonSelect, IonSelectOption, IonTitle, IonToolbar } from '@ionic/react';
 import { alertCircleOutline, text } from 'ionicons/icons';
 import {User, UserPatch} from '../types/types'
 import './Profile.css';
 import {useForm, Controller} from 'react-hook-form'
 import { useState } from 'react';
+import { RouteComponentProps } from 'react-router';
 
-const Profile: React.FC = () => {
+const Profile: React.FC<RouteComponentProps<any>> = (props) => {
  
 
   const initialValues:UserPatch = {
@@ -39,9 +40,13 @@ const Profile: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
+          <IonButtons slot="start">
+              <IonMenuButton />
+          </IonButtons>
           <IonTitle>Profile</IonTitle>
         </IonToolbar>
       </IonHeader>
+
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>

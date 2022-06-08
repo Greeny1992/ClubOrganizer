@@ -39,23 +39,20 @@ const {Form ,loading, error} = BuildForm(formDescription);
 export const Login: React.FunctionComponent<RouteComponentProps<any>> = (props) => {
 
     const dispatch = useDispatch();
-    console.log("HELLO?");
-    
-
 
     const submit = (loginData: LoginData) => {
         dispatch(loading(true));
         login(loginData)
             .then((loginInfo) => {
-                if(loginInfo.user?.active){
+                /* if(loginInfo.user?.active){ */
                     const authresponse = loggedIn(loginInfo);
                     dispatch(authresponse);
-                    executeDelayed(200,() => props.history.replace('/values'))
-                }
+                    executeDelayed(200,() => props.history.replace('/club'))
+               /*  }
                 else{ 
                     dispatch(loggedOut())
                     dispatch(error('Your Account is currently Inactive!'));
-                }                
+                }   */              
             })
             .catch((err: Error) => {
                 dispatch(error('Error while logging in: ' + err.message));
@@ -74,9 +71,11 @@ export const Login: React.FunctionComponent<RouteComponentProps<any>> = (props) 
             </IonHeader>
 
             <IonContent className='centered'>
+                <div className='place_center'>
                 <IonCard className='login_form_card'>
                     <Form handleSubmit={submit}/>
                 </IonCard>
+                </div>
                 
             </IonContent>
         </IonPage>

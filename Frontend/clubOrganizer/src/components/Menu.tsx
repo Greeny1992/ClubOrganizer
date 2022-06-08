@@ -40,13 +40,6 @@ interface AppPage {
 }
 
 const appPages: AppPage[] = [
-  {
-    title: 'Login',
-    url: '/login',
-    iosIcon: homeOutline,
-    mdIcon: homeSharp
-  }
-
 
 ];
 
@@ -66,17 +59,17 @@ function AddMenu(item : AppPage)
 const Menu: React.FC = () => {
   const location = useLocation();
 
-  const {user, authentication } = useSelector((state: RootState) => state.user);
+  const {user, authenticationInformation } = useSelector((state: RootState) => state.user);
 
   const dispatch = useDispatch();
   const store = useStore();
   const token : String = "";
   var securityItem = null;
 
-  if(isNotExpired(authentication))
+  if(isNotExpired(authenticationInformation))
   {
     securityItem = {
-      title: 'Logout ' + user?.username,
+      title: 'Logout ' + user?.userName,
       url: '/login',
       iosIcon: logOutOutline,
       mdIcon: logOutSharp,
@@ -138,8 +131,8 @@ const Menu: React.FC = () => {
           </IonToolbar>
         </IonHeader>
         <IonContent>
-          <IonListHeader>Welcome</IonListHeader>
-          <IonNote>{isNotExpired(authentication) ? 'Hello ' + user?.username : 'Not Logged in'}</IonNote>
+          <IonListHeader>{isNotExpired(authenticationInformation)? user?.userName : 'Bitte logge dich ein, oder registriere dich, um auf deinen Club zugreifen zu können'}</IonListHeader>
+
           <IonList>
             {appPages.map((appPage, index) => {
               return (

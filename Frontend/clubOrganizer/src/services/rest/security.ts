@@ -14,14 +14,16 @@ const timeout = 5000;
 export const login = (loginData: LoginData) =>
     endpoint.post<AuthenticationResponse>('User/Login', loginData, {timeout})
         .then(
-            ({data: {authentication, user}}) => {
+            ({data: {authenticationInformation, user}}) => {
+                console.log(authenticationInformation);
+                
                 return Promise.all([
                     user,
-                    authentication,
+                    authenticationInformation,
                     Storage.set({key: 'user', value: JSON.stringify(( user && typeof user === 'object') ? user : {})}),
-                    Storage.set({key: 'authentication', value: JSON.stringify(( authentication && typeof authentication === 'object') ? authentication : {})}),
+                    Storage.set({key: 'authentication', value: JSON.stringify(( authenticationInformation && typeof authenticationInformation === 'object') ? authenticationInformation : {})}),
                 ])}
-        ).then(([user, authentication, ...others]) => ({user, authentication}) )
+        ).then(([user, authenticationInformation, ...others]) => ({user, authenticationInformation}) )
 
 
 export const isNotExpired = (token: AuthenticationInformation | null | undefined) => {

@@ -2,7 +2,7 @@ export interface User {
     id?: number;
     firstname: string;
     lastname: string;
-    username: string;
+    userName: string;
     password:string;
     email:string;
     role:string;
@@ -25,7 +25,7 @@ export interface AuthenticationInformation {
 }
 
 export interface AuthenticationResponse {
-    authentication: AuthenticationInformation | null;
+    authenticationInformation: AuthenticationInformation | null;
     user: User | null;
 }
 
