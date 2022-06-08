@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
 namespace ClubOrganizerAPI.Controllers
 {
@@ -14,12 +15,19 @@ namespace ClubOrganizerAPI.Controllers
     {
         MongoDBUnitOfWork mongo = MonitoringFacade.Instance.MongoDB;
 
-        [HttpPost("CreatClub")]
+        [HttpPost("CreateClub")]
         [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "User")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Club))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<Club>> CreateClub([Required][FromBody] Club club)
         {
+
+            string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if(userId != null)
+            {
+                club.Owner = await mongo.User.FindByIdAsync(userId);
+            }
             Club cl = await mongo.Club.InsertOrUpdateOneAsync(club);
 
 
@@ -37,6 +45,7 @@ namespace ClubOrganizerAPI.Controllers
         }
 
         [HttpGet("ListClubs")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Club>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<List<Club>>> ListClubs()
@@ -64,6 +73,7 @@ namespace ClubOrganizerAPI.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<Club>> CreateEventForClub([Required][FromBody] Event ev, [Required][FromQuery] string clubId)
         {
+            
             Club cl = await mongo.Club.AddEventToClub(clubId, ev);
 
 
