@@ -3,17 +3,18 @@ import {
   IonApp,
   IonIcon,
   IonLabel,
+  IonMenu,
   IonRouterOutlet,
+  IonSplitPane,
   IonTabBar,
   IonTabButton,
   IonTabs,
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { ellipse, square, triangle } from 'ionicons/icons';
-import Tab1 from './pages/Tab1';
-import Tab2 from './pages/Tab2';
-import Tab3 from './pages/Tab3';
+import { addOutline, homeOutline, manOutline, square } from 'ionicons/icons';
+import Club from './pages/Club/Club';
+import Profile from './pages/Profile/Profile';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -33,43 +34,34 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import Terminplanung from './pages/Termine/Termine';
+import { SecureRoute } from './components/SecurePage';
+import Login from './pages/Login/Login';
+import Menu from './components/Menu';
+import Users from './pages/AdminPages/Users/Users';
+import Register from './pages/AdminPages/Users/Register';
+
 
 setupIonicReact();
 
 const App: React.FC = () => (
   <IonApp>
-    <IonReactRouter>
-      <IonTabs>
-        <IonRouterOutlet>
-          <Route exact path="/tab1">
-            <Tab1 />
-          </Route>
-          <Route exact path="/tab2">
-            <Tab2 />
-          </Route>
-          <Route path="/tab3">
-            <Tab3 />
-          </Route>
-          <Route exact path="/">
-            <Redirect to="/tab1" />
-          </Route>
-        </IonRouterOutlet>
-        <IonTabBar slot="bottom">
-          <IonTabButton tab="tab1" href="/tab1">
-            <IonIcon icon={triangle} />
-            <IonLabel>Tab 1</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="tab2" href="/tab2">
-            <IonIcon icon={ellipse} />
-            <IonLabel>Tab 2</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="tab3" href="/tab3">
-            <IonIcon icon={square} />
-            <IonLabel>Tab 3</IonLabel>
-          </IonTabButton>
-        </IonTabBar>
-      </IonTabs>
-    </IonReactRouter>
+    <IonReactRouter>      
+          <Menu />
+            <IonRouterOutlet id="main">
+              <Route path="/login" component={Login} exact={true} />
+              <SecureRoute path="/profile" component={Profile} exact={true} />
+              <SecureRoute path="/club" component={Club} exact={true} />
+              <SecureRoute path="/termine" component={Terminplanung} exact={true} />
+              <SecureRoute path="/users"  component={Users} exact={true} />
+              <SecureRoute path="/users/add"  component={Register("add")} exact={true} />
+              <SecureRoute path="/users/edit/:id"  component={Register("edit")} exact={true} />
+              <Route path="/" exact={true}>
+                <Redirect to="/profile" />
+              </Route>
+            </IonRouterOutlet>
+          
+        </IonReactRouter>
   </IonApp>
 );
 
