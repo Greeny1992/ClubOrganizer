@@ -101,13 +101,19 @@ namespace Context.Repos.Concrete
                 User userFromDb = await mongo.User.FindByIdAsync(userId);
                 if (userFromDb != null)
                 {
-                    if (clubFromdb.Members == null)
+                    if (clubFromdb.MemberIDs == null)
                     {
-                        clubFromdb.Members = new List<User>();
+                        clubFromdb.MemberIDs = new List<string>();
                     }
-                    clubFromdb.Members.Add(userFromDb);
-                    return await base.UpdateOneAsync(clubFromdb);
+                    clubFromdb.MemberIDs.Add(userFromDb.ID);
+                    clubFromdb= await base.UpdateOneAsync(clubFromdb);
+
+                    userFromDb.MyClubs.Add(clubFromdb.ID);
+                    await mongo.User.InsertOrUpdateOneAsync(userFromDb);
+
+                    return clubFromdb;
                 }
+
             }
             return null;
         }

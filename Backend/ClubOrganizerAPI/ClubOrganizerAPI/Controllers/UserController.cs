@@ -6,6 +6,7 @@ using Context.UnitOfWork;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
 namespace ClubOrganizerAPI.Controllers
 {
@@ -122,6 +123,81 @@ namespace ClubOrganizerAPI.Controllers
 
 
                 return usr;
+            }
+            else
+            {
+                return NotFound();
+            }
+
+        }
+
+        [HttpGet("GetClubsFromUser")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<Club>>> GetClubsFromUser()
+        {
+            User usr = null;
+            string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            
+            if(userId != null)
+            {
+                usr = await mongo.User.FindByIdAsync(userId);
+            }
+
+            
+
+
+            if (usr != null)
+            {
+                List<string> myClubs = (List<string>)usr.MyClubs;
+                List<Club> returnClubs = new List<Club>();
+                if (myClubs.Count() > 0)
+                {
+                    
+                    myClubs.ForEach(async (club) =>
+                    {
+                        returnClubs.Add(await mongo.Club.FindByIdAsync(club));
+                    });
+                }
+
+
+                return returnClubs;
+            }
+            else
+            {
+                return NotFound();
+            }
+
+        }
+
+        [HttpGet("GetOwnedClub")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<Club>> GetOwnedClub()
+        {
+            User usr = null;
+            string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId != null)
+            {
+                usr = await mongo.User.FindByIdAsync(userId);
+            }
+
+
+
+
+            if (usr != null)
+            {
+                string ownedClubID = usr.OwnedClub;
+                if (ownedClubID != null)
+                {
+                    return await mongo.Club.FindByIdAsync(ownedClubID);
+                }
+
+                return NotFound();
+
+
+                 
             }
             else
             {

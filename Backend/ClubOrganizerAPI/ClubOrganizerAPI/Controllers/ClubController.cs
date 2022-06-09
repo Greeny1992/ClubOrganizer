@@ -16,7 +16,6 @@ namespace ClubOrganizerAPI.Controllers
         MongoDBUnitOfWork mongo = MonitoringFacade.Instance.MongoDB;
 
         [HttpPost("CreateClub")]
-        [Authorize(Roles = "Admin")]
         [Authorize(Roles = "User")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Club))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -26,21 +25,30 @@ namespace ClubOrganizerAPI.Controllers
             string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if(userId != null)
             {
-                club.Owner = await mongo.User.FindByIdAsync(userId);
+                User usr = await mongo.User.FindByIdAsync(userId);
+                club.OwnerID = userId;
+                
+            
+                Club cl = await mongo.Club.InsertOrUpdateOneAsync(club);
+
+                usr.OwnedClub = cl.ID;
+                await mongo.User.InsertOrUpdateOneAsync(usr);
+
+                if (cl != null)
+                {
+
+
+                    return cl;
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
-            Club cl = await mongo.Club.InsertOrUpdateOneAsync(club);
 
-
-            if (cl != null)
-            {
-
-
-                return cl;
-            }
-            else
-            {
-                return NotFound();
-            }
+            return NotFound();
+            
+            
 
         }
 
@@ -116,9 +124,10 @@ namespace ClubOrganizerAPI.Controllers
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Club))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<Club>> CreateGroupForClub([Required][FromQuery] string userId, [Required][FromQuery] string clubId)
+        public async Task<ActionResult<Club>> AddMemberToClub([Required][FromQuery] string userId, [Required][FromQuery] string clubId)
         {
             Club cl = await mongo.Club.AddUserToClub(clubId, userId);
+
 
             if (cl != null)
             {
@@ -134,7 +143,7 @@ namespace ClubOrganizerAPI.Controllers
         }
 
         [HttpGet("GetClub")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "User")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Club))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<Club>> GetClub([Required][FromQuery] string clubId)
