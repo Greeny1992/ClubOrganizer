@@ -12,8 +12,6 @@ import {
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { addOutline, homeOutline, manOutline, square } from 'ionicons/icons';
-import Club from './pages/Club/Club';
 import Profile from './pages/Profile/Profile';
 
 /* Core CSS required for Ionic components to work properly */
@@ -40,6 +38,7 @@ import Login from './pages/Login/Login';
 import Menu from './components/Menu';
 import Users from './pages/AdminPages/Users/Users';
 import Register from './pages/AdminPages/Users/Register';
+import ClubPage from './pages/Club/Club';
 
 
 setupIonicReact();
@@ -51,7 +50,7 @@ const App: React.FC = () => (
             <IonRouterOutlet id="main">
               <Route path="/login" component={Login} exact={true} />
               <SecureRoute path="/profile" component={Profile} exact={true} />
-              <SecureRoute path="/club" component={Club} exact={true} />
+              <SecureRoute path="/club" component={ClubPage} exact={true} />
               <SecureRoute path="/termine" component={Terminplanung} exact={true} />
               <SecureRoute path="/users"  component={Users} exact={true} />
               <SecureRoute path="/users/add"  component={Register("add")} exact={true} />

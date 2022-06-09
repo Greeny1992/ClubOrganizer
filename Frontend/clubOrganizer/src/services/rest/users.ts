@@ -33,6 +33,8 @@ endpoint.get<User | ErrorMessage>(`${config.getUserURI}GetUser?id=${name}`, { he
         return returnval;
     })
 
+
+    // HIER --> Nur User im aktuellem Club anzeigen ! --> Darf nur Owner und Admin eines Clubs ansehen/ ändern
 export const fetchUsers = (token: string | null) =>
 endpoint.get<UserList | ErrorMessage>(`${config.getUserURI}ListUsers`, { headers: createAuthenticationHeader(token) })
     // Use this to simulate network latency

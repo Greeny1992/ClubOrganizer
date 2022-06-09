@@ -3,7 +3,9 @@ export interface User {
     firstname: string;
     lastname: string;
     userName: string;
-    groups: string[]
+    groups: string[];
+    ownedClub: string;
+    myClubs: string[];
     password:string;
     email:string;
     role:string;
@@ -34,3 +36,31 @@ export interface LoginData {
     username: string,
     password: string
 }
+
+export interface Group{
+    name:string;
+    description:string;
+    id:string
+}
+
+export interface Event{
+    name: string;
+    description: string;
+    startDate: string;
+    endDate: string;
+    active: boolean;
+    acceptUsers: User[];
+    cancelUsers: User[];
+    id:string;
+}
+
+export interface Club {
+    name:string;
+    ownerID: string,
+    adminIDs: string[]
+    memberIDs: string[],
+    groups: Group[],
+    id:string
+}
+
+export type Clubs = Club[];

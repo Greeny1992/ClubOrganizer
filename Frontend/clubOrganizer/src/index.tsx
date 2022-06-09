@@ -9,6 +9,7 @@ import { combineReducers } from 'redux';
 import rootReducer from './services/reducers';
 import { loadUserData } from './services/rest/security';
 import { loggedIn } from './services/actions/security';
+import { getActiveClub } from './services/rest/club';
 
 const AppReducer = combineReducers({
   rootReducer,
@@ -21,6 +22,8 @@ loadUserData()
         return info.user && info.authentication ? store.dispatch(loggedIn({user: info.user, authenticationInformation: info.authentication})): false
     })
     .catch(e => console.log(e))
+
+getActiveClub()
 
 const render = () => {
   const App = require("./App").default;
