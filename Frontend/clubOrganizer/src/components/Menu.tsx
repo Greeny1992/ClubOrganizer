@@ -31,6 +31,8 @@ import {useDispatch, useSelector, useStore} from "react-redux";
 import {loggedOut} from "../services/actions/security";
 import {isNotExpired} from "../services/rest/security";
 import {RootState} from "../services/reducers";
+import { fetchClub, getActiveClub } from '../services/rest/club';
+import { Club } from '../types/types';
 
 interface AppPage {
   url: string;
@@ -70,12 +72,33 @@ function AddAdminMenu(item : AppPage)
 const Menu: React.FC = () => {
   const location = useLocation();
 
-  const {user, authenticationInformation } = useSelector((state: RootState) => state.user);
-
+  const {user, authenticationInformation} = useSelector((state: RootState) => state.user);
+  const {activeClubID } = useSelector((state: RootState) => state.activeCl);
+  const [selectedClub, setSCID] = useState({name:"", ownerID: "", adminIDs:[""],memberIDs: [""], groups: [],id:""} as Club)
   const dispatch = useDispatch();
   const store = useStore();
   const token : String = "";
   var securityItem = null;
+  
+  
+  useEffect(() => {
+    console.log(activeClubID);
+
+    if(authenticationInformation && activeClubID != ""){
+      console.log("OKDOKI");
+      console.log(authenticationInformation);
+      
+      
+      fetchClub(authenticationInformation?.token, activeClubID).then(c=>{
+        setSCID(c)
+      })
+    }
+
+    console.log(selectedClub);
+    
+    
+    
+}, [activeClubID]);
 
   if(isNotExpired(authenticationInformation))
   {
@@ -108,7 +131,7 @@ const Menu: React.FC = () => {
       mdIcon : alarmSharp
     })
 
-    if(user!.role == "Admin") {
+    if(user?.id == selectedClub.ownerID || selectedClub.adminIDs.some(e=> e ==user?.id)) {
       AddAdminMenu(
           {
               title: 'Users',
@@ -135,6 +158,9 @@ const Menu: React.FC = () => {
           mdIcon: layersSharp
       }
   );
+  }
+  else {
+    adminFunctions = [];
   }
 
   }
@@ -174,7 +200,7 @@ const Menu: React.FC = () => {
                   </IonMenuToggle>
               );
             })}
-            <IonNote className='menu_note'>Clubname?</IonNote>
+            <IonNote className='menu_note'>{selectedClub != null? "Club: " + selectedClub.name: "select a Club"}</IonNote>
             {secureAppPage.map((appPage, index) => {
               return (
                   <IonMenuToggle key={index} autoHide={false}>

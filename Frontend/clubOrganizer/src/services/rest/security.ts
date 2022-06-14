@@ -2,6 +2,7 @@ import {LoginData, User, AuthenticationInformation, AuthenticationResponse} from
 import config from './server-config';
 import axios from 'axios';
 import { Storage } from '@capacitor/storage';
+import { fetchClub } from './club';
 
 const endpoint = axios.create({
     baseURL: config.host,
@@ -16,6 +17,14 @@ export const login = (loginData: LoginData) =>
         .then(
             ({data: {authenticationInformation, user}}) => {
                 console.log(authenticationInformation);
+                if(authenticationInformation && user?.ownedClub){
+                    fetchClub(authenticationInformation.token, user.ownedClub).then(club =>{
+                        Storage.set({key: 'ownedClub', value: JSON.stringify(( club && typeof club === 'object') ? club : {})})
+                    })
+                }
+                else{
+                    Storage.set({key: 'ownedClub', value: ''})
+                }
                 
                 return Promise.all([
                     user,
@@ -49,12 +58,14 @@ export const isNotExpired = (token: AuthenticationInformation | null | undefined
 export const loadUserData = () => Promise.all([Storage.get({key: 'user'}),Storage.get({key: 'authentication'})])
     .then(([user, authentication]) => ({ user: user.value ? JSON.parse(user.value): null , authentication: authentication.value ? JSON.parse(authentication.value): null }))
 
-export const clearUserData = () => Promise.all([Storage.remove({key: 'user'}), Storage.remove({key: 'authentication'})])
+export const clearUserData = () => Promise.all([Storage.remove({key: 'user'}), Storage.remove({key: 'authentication'}),Storage.remove({key:'activeClub'})])
 
 export const getUserInfo = () => Promise.all([Storage.get({key: 'user'}),Storage.get({key: 'authentication'})])
     .then(([user, authentication]) => {
-        if (user.value && authentication.value)
+        if (user.value && authentication.value){
+            
             return {user: JSON.parse(user.value), authentication:  JSON.parse(authentication.value)}
+        }
         else throw new Error('Not logged in!')
     })
 

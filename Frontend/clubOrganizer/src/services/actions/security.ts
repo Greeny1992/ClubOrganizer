@@ -1,4 +1,4 @@
-import {AuthenticationInformation, AuthenticationResponse, User} from "../../types/types";
+import {AuthenticationInformation, AuthenticationResponse, Club, User} from "../../types/types";
 import { createAction } from 'typesafe-actions';
 
 export const loggedIn = createAction('user/loggedIn')<AuthenticationResponse>();

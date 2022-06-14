@@ -26,8 +26,8 @@ type formData = Readonly<LoginData>;
 const formDescription: FormDescription<formData> = {
     name: 'login',
     fields: [
-        {name: 'username', label: 'Email', type: 'email',
-            position: 'floating', color: 'primary', validators: [Validator.required, Validator.email]},
+        {name: 'username', label: 'Email', type: 'text',
+            position: 'floating', color: 'primary', validators: [Validator.required]},
         {name: 'password', label: 'Password', type: 'password',
             position: 'floating', color: 'primary',validators: [Validator.required]}
     ],

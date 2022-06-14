@@ -91,7 +91,11 @@ namespace Context.Repos
 
         private void SetUser(User document)
         {
-            document.HashedPassword = _passwordHasher.Hash(document.Password);
+            if (document.Password != null)
+            {
+                document.HashedPassword = _passwordHasher.Hash(document.Password);
+            }
+            
 
         }
 

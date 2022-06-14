@@ -5,7 +5,7 @@ import {AuthenticationResponse} from "../../types/types";
 import {clearUserData} from "../rest/security";
 
 const initialState : AuthenticationResponse = {
-        user: { firstname:"", lastname:"", userName: "", email: "", password : "", role:"", active:false, groups: []},
+        user: { firstname:"", lastname:"", userName: "", email: "", password : "", role:"", active:false, groups: [], myClubs:[], ownedClub:""},
         authenticationInformation: { token: "", expirationDate: 0}
 }
 
