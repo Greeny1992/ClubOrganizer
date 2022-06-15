@@ -364,4 +364,4 @@ plugins
 *.DS_Store
 MongoData/diagnostic.data
 MongoData/journal/*
-MongoData/*
+MongoData/**

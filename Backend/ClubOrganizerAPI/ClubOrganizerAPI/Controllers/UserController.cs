@@ -205,5 +205,49 @@ namespace ClubOrganizerAPI.Controllers
             }
 
         }
+
+        [HttpGet("GetUserByEmail")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<User>> GetUserByEmail([Required][FromQuery] String email)
+        {
+
+
+            User usr = await mongo.User.FindOneAsync(x => x.Email == email);
+
+
+            if (usr != null)
+            {
+                return usr;
+            }
+            else
+            {
+                return NotFound();
+            }
+
+        }
+
+        [HttpGet("ListMemberFromClub")]
+        [Authorize(Roles = "User")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<User>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<User>>> ListMemberFromClub([Required][FromQuery] String clubId)
+        {
+
+
+            List<User> members = await mongo.User.ListMemberFromClub(clubId);
+
+
+            if (members != null)
+            {
+
+
+                return members;
+            }
+            else
+            {
+                return NoContent();
+            }
+        }
     }
 }
