@@ -121,7 +121,6 @@ namespace ClubOrganizerAPI.Controllers
         }
 
         [HttpPost("AddMemberToClub")]
-        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Club))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<Club>> AddMemberToClub([Required][FromQuery] string userId, [Required][FromQuery] string clubId)

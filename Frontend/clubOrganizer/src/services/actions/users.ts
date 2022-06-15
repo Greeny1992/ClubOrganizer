@@ -3,7 +3,7 @@ import {createAction, createAsyncAction} from 'typesafe-actions';
 import {ThunkAction} from "redux-thunk";
 import {RootState} from "../reducers";
 import {AnyAction} from "redux";
-import {fetchUser, fetchUsers} from "../rest/users";
+import {fetchUser, fetchUserByEmail, fetchUsers} from "../rest/users";
 
 
 export const fetchUsersActions = createAsyncAction(
@@ -39,6 +39,18 @@ export const fetchUserAction = (id: string):ThunkAction<Promise<UserResult>, Roo
     (dispatch, getState) => {
         dispatch(fetchUserActions.request());
         return fetchUser(getState().user.authenticationInformation!.token || '',id)
+            .then(
+                Value =>dispatch(fetchUserActions.success(Value))
+            )
+            .catch(
+                err => dispatch(fetchUserActions.failure(err))
+            )
+    };
+
+export const fetchUserByEmailAction = (email: string):ThunkAction<Promise<UserResult>, RootState, null, AnyAction> =>
+    (dispatch, getState) => {
+        dispatch(fetchUserActions.request());
+        return fetchUserByEmail(getState().user.authenticationInformation!.token || '',email)
             .then(
                 Value =>dispatch(fetchUserActions.success(Value))
             )

@@ -9,5 +9,8 @@ namespace Context.Repos
 
         Task<User> AddGroupToUser(string userId, string groupId);
 
+
+        Task<List<User>> ListMemberFromClub(string clubId);
+
     }
 }

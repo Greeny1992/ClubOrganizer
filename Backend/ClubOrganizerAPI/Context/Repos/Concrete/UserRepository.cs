@@ -88,6 +88,20 @@ namespace Context.Repos
             return null;
         }
 
+        public async Task<List<User>> ListMemberFromClub(string clubId) { 
+            Club clubFromdb = await mongo.Club.FindByIdAsync(clubId);
+            if(clubFromdb != null && clubFromdb.MemberIDs.Count > 0)
+            {
+                List<User> members = new List<User>();
+                foreach(var member in clubFromdb.MemberIDs)
+                {
+                    members.Add(await base.FindByIdAsync(member));
+                }
+                return members;
+            }
+            return null;
+        }
+
 
         private void SetUser(User document)
         {

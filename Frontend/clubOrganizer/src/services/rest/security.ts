@@ -18,9 +18,9 @@ export const login = (loginData: LoginData) =>
             ({data: {authenticationInformation, user}}) => {
                 console.log(authenticationInformation);
                 if(authenticationInformation && user?.ownedClub){
-                    fetchClub(authenticationInformation.token, user.ownedClub).then(club =>{
+                    fetchClub(authenticationInformation.token, user.ownedClub).then(club =>
                         Storage.set({key: 'ownedClub', value: JSON.stringify(( club && typeof club === 'object') ? club : {})})
-                    })
+                    )
                 }
                 else{
                     Storage.set({key: 'ownedClub', value: ''})
@@ -58,7 +58,7 @@ export const isNotExpired = (token: AuthenticationInformation | null | undefined
 export const loadUserData = () => Promise.all([Storage.get({key: 'user'}),Storage.get({key: 'authentication'})])
     .then(([user, authentication]) => ({ user: user.value ? JSON.parse(user.value): null , authentication: authentication.value ? JSON.parse(authentication.value): null }))
 
-export const clearUserData = () => Promise.all([Storage.remove({key: 'user'}), Storage.remove({key: 'authentication'}),Storage.remove({key:'activeClub'})])
+export const clearUserData = () => Promise.all([Storage.remove({key: 'user'}), Storage.remove({key: 'authentication'}),Storage.remove({key:'activeClub'}), Storage.remove({key:'ownedClub'})])
 
 export const getUserInfo = () => Promise.all([Storage.get({key: 'user'}),Storage.get({key: 'authentication'})])
     .then(([user, authentication]) => {

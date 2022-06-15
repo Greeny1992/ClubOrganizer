@@ -39,6 +39,7 @@ import Menu from './components/Menu';
 import Users from './pages/AdminPages/Users/Users';
 import Register from './pages/AdminPages/Users/Register';
 import ClubPage from './pages/Club/Club';
+import Members from './pages/Members/Members';
 
 
 setupIonicReact();
@@ -52,6 +53,7 @@ const App: React.FC = () => (
               <SecureRoute path="/profile" component={Profile} exact={true} />
               <SecureRoute path="/club" component={ClubPage} exact={true} />
               <SecureRoute path="/termine" component={Terminplanung} exact={true} />
+              <SecureRoute path="/members"  component={Members} exact={true} />
               <SecureRoute path="/users"  component={Users} exact={true} />
               <SecureRoute path="/users/add"  component={Register("add")} exact={true} />
               <SecureRoute path="/users/edit/:id"  component={Register("edit")} exact={true} />
