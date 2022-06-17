@@ -2,7 +2,7 @@ import { Interface } from "readline";
 import { AnyAction } from "redux";
 import { createReducer } from "typesafe-actions";
 import { Club, Clubs } from "../../types/types";
-import { activeC, fetchClubsActions, fetchOwnedActions } from "../actions/club";
+import { activeC, fetchAddGroupActions, fetchClubsActions, fetchOwnedActions } from "../actions/club";
 
 const initialState = {
   activeClubID: "",
@@ -25,6 +25,21 @@ export interface OwnedClubState {
 }
 
 export const clubs = createReducer<OwnedClubState, AnyAction>(init)
+.handleAction(fetchAddGroupActions.request, (state, action) => ({
+  ...state,
+  isLoading: true,
+  errorMessage: "",
+}))
+.handleAction(fetchAddGroupActions.failure, (state, action) => ({
+  ...state,
+  isLoading: false,
+  errorMessage: action.payload.message,
+}))
+.handleAction(fetchAddGroupActions.success, (state, action) => ({
+  ...state,
+  isLoading: false,
+  owned: action.payload,
+}))
   .handleAction(fetchClubsActions.request, (state, action) => ({
     ...state,
     isLoading: true,

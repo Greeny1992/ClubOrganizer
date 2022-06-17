@@ -40,7 +40,7 @@ export interface LoginData {
 export interface Group{
     name:string;
     description:string;
-    id:string
+    id?:string
 }
 
 export interface Event{
