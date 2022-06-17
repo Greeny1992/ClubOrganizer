@@ -1,4 +1,4 @@
-import { Club, Clubs, User, UserList } from "../../types/types";
+import { Club, Clubs, Group, User, UserList } from "../../types/types";
 import config from "./server-config";
 import axios from "axios";
 import { Storage } from "@capacitor/storage";
@@ -76,6 +76,19 @@ export const fetchClubs = (token: string | null) =>
 
 export const addMemberToClub = (token: string | null, clubId: string, userId: string) => 
   endpoint.post<Club | ErrorMessage>(`${config.getClubControllerURI}AddMemberToClub?clubId=${clubId}&userId=${userId}`, {
+    headers: createAuthenticationHeader(token)
+  }).then((r) => {
+    if (r.status >= 300) {
+      const { message } = r.data as ErrorMessage;
+      throw new Error(message || r.statusText);
+    }
+    var returnval = r.data as Club;
+    console.log(returnval);
+    return returnval;
+  });
+
+  export const addGroupToClub = (token:string | null, clubId: string, group:Group) => 
+  endpoint.post<Club | ErrorMessage> (`${config.getClubControllerURI}CreateGroupForClub?clubId=${clubId}`, group,{
     headers: createAuthenticationHeader(token)
   }).then((r) => {
     if (r.status >= 300) {

@@ -1,4 +1,4 @@
-import { IonAvatar, IonButton, IonButtons, IonCard, IonCardContent, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonMenuButton, IonPage, IonRow, IonSelect, IonSelectOption, IonTitle, IonToolbar } from '@ionic/react';
+import { IonAvatar, IonButton, IonButtons, IonCard, IonCardContent, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonMenuButton, IonPage, IonRefresher, IonRefresherContent, IonRow, IonSelect, IonSelectOption, IonTitle, IonToolbar, RefresherEventDetail } from '@ionic/react';
 import { alertCircleOutline, text } from 'ionicons/icons';
 import {Club, Clubs, User, UserPatch} from '../../types/types'
 import './Profile.css';
@@ -8,12 +8,14 @@ import { RouteComponentProps } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../services/reducers';
 import { ThunkDispatch } from 'redux-thunk';
-import { fetchClubsAction, fetchOwnedAction, OwnedResult } from '../../services/actions/club';
+import { fetchClubsAction, fetchClubsActions, fetchOwnedAction, fetchOwnedActions, OwnedResult } from '../../services/actions/club';
+import { fetchClubs, fetchOwnedClub } from '../../services/rest/club';
 
 const Profile: React.FC<RouteComponentProps<any>> = (props) => {
  
   const {user, authenticationInformation } = useSelector((state: RootState) => state.user);
-  const {owned, myclubs } = useSelector((state: RootState) => state.clubs);
+  const token = useSelector((s:RootState) => s.user.authenticationInformation!.token || '');
+  const {owned, myclubs, isLoading, errorMessage } = useSelector((state: RootState) => state.clubs);
   const [ownedClub, setOwnedClub] = useState<Club | null>(null)
   const [userclubs, setUserClubs] = useState<Clubs | null>(null)
   const thunkDispatch: ThunkDispatch<RootState, null, OwnedResult> = useDispatch();
@@ -22,7 +24,8 @@ const Profile: React.FC<RouteComponentProps<any>> = (props) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!ownedClub) {
+    if(!isLoading) {
+      if (!ownedClub) {
         thunkDispatch(fetchOwnedAction()).then(() => {
           setOwnedClub(owned);
         });
@@ -31,15 +34,30 @@ const Profile: React.FC<RouteComponentProps<any>> = (props) => {
       thunkDispatch(fetchClubsAction()).then(() => {
         setUserClubs(myclubs);
       });
+    }
+    
   }
-}, []);
+}, [owned, myclubs]);
+
+const doRefresh = (event: CustomEvent<RefresherEventDetail>) => {
+  console.log('Begin async operation on Value List');
+  fetchOwnedClub(token)
+      .then(usr => dispatch(fetchOwnedActions.success(usr)))
+      .then(() => event.detail.complete())
+      .catch(err => dispatch(fetchOwnedActions.failure(err)))
+
+  fetchClubs(token)
+  .then(usr => dispatch(fetchClubsActions.success(usr)))
+      .then(() => event.detail.complete())
+      .catch(err => dispatch(fetchClubsActions.failure(err)))
+}
 
   const initialValues:UserPatch = {
     firstname: user!.firstname,
     lastname: user!.lastname,
     username: user!.userName,
     password: user!.password,
-    email: user!.userName
+    email: user!.email
   }
 
   const { control, register, handleSubmit, formState } = useForm({
@@ -54,6 +72,8 @@ const Profile: React.FC<RouteComponentProps<any>> = (props) => {
     const lastname = data.lastname;
     const username = data.username;
     console.log("DATA: ", data);
+    console.log(user);
+    
     setData(data)
     
   }
@@ -74,6 +94,9 @@ const Profile: React.FC<RouteComponentProps<any>> = (props) => {
       </IonHeader>
 
       <IonContent fullscreen>
+      <IonRefresher slot="fixed" onIonRefresh={doRefresh}>
+                    <IonRefresherContent></IonRefresherContent>
+                </IonRefresher>
         <IonHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Profile</IonTitle>
