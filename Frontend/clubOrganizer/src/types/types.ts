@@ -46,18 +46,18 @@ export interface Group{
 export interface Event{
     name: string;
     description: string;
-    startDate: string;
-    endDate: string;
+    startDateTime: string;
+    endDateTime: string;
     active: boolean;
     acceptUsers: User[];
     cancelUsers: User[];
-    id:string;
+    id?:string;
 }
 
 export interface Club {
     name:string;
     ownerID: string,
-    adminIDs: string[]
+    events: Event[]
     memberIDs: string[],
     groups: Group[],
     id:string
