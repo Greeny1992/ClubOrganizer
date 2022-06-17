@@ -16,12 +16,21 @@ import {
   IonCardHeader,
   IonCardSubtitle,
   IonCardTitle,
+  RefresherEventDetail,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonRefresher,
+  IonRefresherContent,
+  IonIcon,
 } from "@ionic/react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "redux-thunk";
 import { isOfType } from "typesafe-actions";
 import {
+  fetchUserAction,
+  fetchUserActions,
   fetchUserByEmailAction,
   UserResult,
 } from "../../services/actions/users";
@@ -31,103 +40,96 @@ import { BuildForm, FormDescription } from "../../utils/form-builder";
 import { Storage } from "@capacitor/storage";
 import {
   fetchMembersFromClub,
+  fetchUser,
   fetchUserByEmail,
 } from "../../services/rest/users";
-import { addMemberToClub } from "../../services/rest/club";
+import { addMemberToClub, fetchOwnedClub } from "../../services/rest/club";
+import { fetchOwnedActions } from "../../services/actions/club";
+import { add } from "ionicons/icons";
+import { RouteComponentProps } from "react-router";
 
 const { loading } = BuildForm({} as FormDescription<{ search: string }>);
 
-const Members: React.FC = (props) => {
+const Members: React.FC<RouteComponentProps> = ({ history }) => {
   const { user, authenticationInformation } = useSelector(
     (state: RootState) => state.user
   );
 
-  const [present, dismiss] = useIonToast();
-  const [searchMail, setSearchMail] = useState<string>();
-  const [searchResultUser, setSearchResultUser] = useState<User>();
-  const [ownedClub, setOwnedClub] = useState<string>("");
-  const [currentMembers, setCurrentMembers] = useState<User[]>();
+  const { owned, isLoading, errorMessage } = useSelector((s:RootState) => s.clubs);
+  const [members, setMembers] = useState([] as User[]);
+  const token = useSelector((s:RootState) => s.user.authenticationInformation!.token || '');
   const thunkDispatch: ThunkDispatch<RootState, null, UserResult> =
     useDispatch();
   const dispatch = useDispatch();
 
+
   useEffect(() => {
-    if (user) {
-      setOwnedClub(user.ownedClub);
+    if (authenticationInformation && owned) {
+      fetchOwnedClub(token)
+        .then(club => dispatch(fetchOwnedActions.success(club)))
+        .then(data => getUsersFromAPI(data.payload.memberIDs))
+        .catch(err => dispatch(fetchOwnedActions.failure(err)))
     }
   }, []);
 
-  useEffect(() => {
-    if (authenticationInformation && ownedClub) {
-      fetchMembersFromClub(authenticationInformation?.token, ownedClub).then(
-        (members) => {
-          console.log("members", members);
-          setCurrentMembers(members);
+  const getUsersFromAPI = (listOfUserIDs:string[])=>{
+    let newUserList = [] as User[]
+    listOfUserIDs.forEach((user)=>{
+        fetchUser(token, user)
+        .then(usr => {newUserList.push(usr); console.log(newUserList);
+        })
+        .catch(err => dispatch(fetchUserActions.success(err)))
+    })
+    setMembers(newUserList)
+  }
+
+
+  const NoValuesInfo = () => !isLoading && owned?.memberIDs.length == 0 ?
+        (<IonCard>
+            <img src='assets/images/img.png'></img>
+            <IonCardHeader>
+                <IonCardTitle>No Members found...</IonCardTitle>
+            </IonCardHeader>
+        </IonCard>) : (<></>)
+
+const doRefresh = (event: CustomEvent<RefresherEventDetail>) => {
+    console.log('Begin async operation on Value List');
+    fetchOwnedClub(token)
+        .then(usr => dispatch(fetchOwnedActions.success(usr)))
+        .then(() => event.detail.complete())
+        .catch(err => dispatch(fetchOwnedActions.failure(err)))
+}
+
+    const ListMembers = () => {
+
+        if (members){
+            const items = members.map(value => {
+              const activeState = value.active? "Aktiv" : "Inaktiv"
+              const userGroups = value.groups.length > 0 ? value.groups : "Noch in keinen Gruppen!"
+                return (
+                            <IonCard className='userCard' key={value.id} /* onClick={() => history.push('/groups/edit/' +value.id)} */>
+                                <IonCardHeader>
+                                    <IonCardTitle>Name: {value.firstname + ' ' + value.lastname}</IonCardTitle>
+                                    <IonCardContent>
+                                        <IonGrid>
+                                            <IonRow> <IonCol>Email:</IonCol> <IonCol>{value.email}</IonCol></IonRow>
+                                            <IonRow> <IonCol>Username:</IonCol> <IonCol>{value.userName}</IonCol></IonRow>
+                                            <IonRow> <IonCol>Active:</IonCol> <IonCol>{activeState}</IonCol></IonRow>
+                                            <IonRow> <IonCol>Gruppen:</IonCol> <IonCol>{userGroups}</IonCol></IonRow>
+                                        </IonGrid>
+                                    </IonCardContent>
+                                </IonCardHeader>
+                            </IonCard>  
+                );
+            });
+            return items.length > 0 ? <IonGrid><IonRow>{items}</IonRow></IonGrid> : <NoValuesInfo />;
         }
-      );
-    }
-  }, [ownedClub]);
+        else {
+            return <NoValuesInfo/>;
+        }
 
-  const onClickSearch = () => {
-    dispatch(loading(true));
-    if (authenticationInformation && searchMail)
-      fetchUserByEmail(authenticationInformation?.token, searchMail)
-        .then((user) => {
-          setSearchResultUser(user);
-        })
-        .catch((err) => present("Leider kein User gefunden", 3000))
-        .finally(() => dispatch(loading(false)));
-  };
-
-  const onClickAddUser = () => {
-    if (
-      authenticationInformation &&
-      searchResultUser?.id &&
-      ownedClub &&
-      searchMail
-    ) {
-      addMemberToClub(
-        authenticationInformation?.token,
-        ownedClub,
-        searchResultUser.id
-      ).then((data) => {
-        Storage.set({
-          key: "ownedClub",
-          value: JSON.stringify(data && typeof data === "object" ? data : {}),
-        });
-      });
-      fetchUserByEmail(authenticationInformation?.token, searchMail)
-        .then((user) => {
-          setSearchResultUser(user);
-        })
-        .catch((err) => present("Leider kein User gefunden", 3000))
-        .finally(() => dispatch(loading(false)));
-    }
-  };
-  const isAlreadyMember =
-    searchResultUser?.myClubs.includes(ownedClub) ||
-    searchResultUser?.ownedClub === ownedClub;
-  const RenderSearchResultUser = () => {
-    return (
-      <IonCard>
-        <IonCardHeader>
-          <IonCardTitle>
-            {searchResultUser?.firstname + " " + searchResultUser?.lastname}
-          </IonCardTitle>
-          <IonCardSubtitle>{searchResultUser?.email}</IonCardSubtitle>
-        </IonCardHeader>
-        <IonCardContent>
-          <IonButton
-            disabled={isAlreadyMember}
-            onClick={() => onClickAddUser()}
-          >
-            {isAlreadyMember ? "Bereits ein Mitglied" : "Mitglied hinzufügen"}
-          </IonButton>
-        </IonCardContent>
-      </IonCard>
-    );
-  };
-
+        
+    };
   return (
     <IonPage>
       <IonHeader>
@@ -135,42 +137,19 @@ const Members: React.FC = (props) => {
           <IonButtons slot="start">
             <IonMenuButton />
           </IonButtons>
+          <IonButtons slot="primary">
+                        <IonButton onClick={() => history.push('/members/add')}>
+                            <IonIcon slot="icon-only" icon={add}/>
+                        </IonButton>
+                    </IonButtons>
           <IonTitle>Clubmitglieder</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <IonCard>
-          <IonItem>
-            <IonLabel position="floating">
-              Email von gwünschten Mitglied hier eingeben
-            </IonLabel>
-            <IonInput
-              value={searchMail}
-              onIonChange={(e) => setSearchMail(e.detail.value!)}
-              clearInput
-            ></IonInput>
-          </IonItem>
-          <IonCardContent>
-            <IonButton onClick={() => onClickSearch()} disabled={!searchMail}>
-              Suchen
-            </IonButton>
-          </IonCardContent>
-        </IonCard>
-
-        {searchResultUser && <RenderSearchResultUser />}
-        {currentMembers &&
-          currentMembers.forEach((usr) => {
-            return (
-              <IonCard>
-                <IonCardHeader>
-                  <IonCardTitle>
-                    {usr?.firstname + " " + usr?.lastname}
-                  </IonCardTitle>
-                  <IonCardSubtitle>{usr?.email}</IonCardSubtitle>
-                </IonCardHeader>
-              </IonCard>
-            );
-          })}
+      <IonRefresher slot="fixed" onIonRefresh={doRefresh}>
+                    <IonRefresherContent></IonRefresherContent>
+                </IonRefresher>
+      <ListMembers/>
       </IonContent>
     </IonPage>
   );
