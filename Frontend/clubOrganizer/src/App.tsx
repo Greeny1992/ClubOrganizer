@@ -42,6 +42,8 @@ import RegisterGroup from './pages/AdminPages/Groups/RegisterGroup';
 import ClubPage from './pages/Club/Club';
 import Members from './pages/Members/Members';
 import Groups from './pages/AdminPages/Groups/Groups';
+import Events from './pages/AdminPages/Events/Events';
+import RegisterEvents from './pages/AdminPages/Events/RegisterEvents';
 
 
 setupIonicReact();
@@ -59,6 +61,9 @@ const App: React.FC = () => (
               <SecureRoute path="/groups"  component={Groups} exact={true} />
               <SecureRoute path="/groups/add"  component={RegisterGroup("add")} exact={true} />
               <SecureRoute path="/groups/edit" component={RegisterGroup("edit")} exact={true} />
+              <SecureRoute path="/events"  component={Events} exact={true} />
+              <SecureRoute path="/events/add"  component={RegisterEvents("add")} exact={true} />
+              <SecureRoute path="/events/edit" component={RegisterEvents("edit")} exact={true} />
               <SecureRoute path="/users"  component={Users} exact={true} />
               <SecureRoute path="/users/add"  component={Register("add")} exact={true} />
               <SecureRoute path="/users/edit/:id"  component={Register("edit")} exact={true} />
