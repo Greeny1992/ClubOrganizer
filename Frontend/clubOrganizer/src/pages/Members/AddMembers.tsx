@@ -169,10 +169,9 @@ import {
           </IonCard>
   
           {searchResultUser && <RenderSearchResultUser />}
-          {currentMembers &&
-            currentMembers.forEach((usr) => {
+          {currentMembers && currentMembers?.length > 0?currentMembers.forEach((usr) => {
               return (
-                <IonCard>
+                <IonCard key={usr.id}>
                   <IonCardHeader>
                     <IonCardTitle>
                       {usr?.firstname + " " + usr?.lastname}
@@ -181,7 +180,7 @@ import {
                   </IonCardHeader>
                 </IonCard>
               );
-            })}
+            }) : <></>}
         </IonContent>
       </IonPage>
     );

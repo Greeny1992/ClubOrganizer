@@ -117,6 +117,9 @@ export const addMemberToClub = (token: string | null, clubId: string, userId: st
 export const setActiveClub = (id: string) => {
   Storage.set({ key: "activeClub", value: id });
   store.dispatch(activeC({ activeClubID: id }));
+
+  console.log("stored: ", id);
+  
 };
 
 const _getActiveClub = () =>

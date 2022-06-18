@@ -31,14 +31,20 @@ import {
 } from "../../services/actions/club";
 import { loggedIn } from "../../services/actions/security";
 import { RootState } from "../../services/reducers";
-import { fetchClubs, fetchOwnedClub, setActiveClub } from "../../services/rest/club";
+import {
+  fetchClubs,
+  fetchOwnedClub,
+  setActiveClub,
+} from "../../services/rest/club";
 import { loadUserData } from "../../services/rest/security";
 import { Club } from "../../types/types";
 import "./Club.css";
 
 const ClubPage: React.FC = (props) => {
   const { owned, myclubs } = useSelector((state: RootState) => state.clubs);
-  const token = useSelector((s:RootState) => s.user.authenticationInformation!.token || '');
+  const token = useSelector(
+    (s: RootState) => s.user.authenticationInformation!.token || ""
+  );
   const [ownedClub, setOwnedClub] = useState<any | null>(null);
   const [userclubs, setUserClubs] = useState<any | null>(null);
   const [selectedClub, setSelectedClub] = useState<string>();
@@ -62,24 +68,25 @@ const ClubPage: React.FC = (props) => {
 
   const onSetClubActive = (clubId: string) => {
     setSelectedClub(clubId);
-    setActiveClub(clubId)
-  }
+    setActiveClub(clubId);
+
+    console.log("getActiveClub: ", clubId);
+  };
 
   const doRefresh = (event: CustomEvent<RefresherEventDetail>) => {
-    console.log('Begin async operation on Value List');
+    console.log("Begin async operation on Value List");
     fetchOwnedClub(token)
-        .then(usr => dispatch(fetchOwnedActions.success(usr)))
-        .then(() => event.detail.complete())
-        .catch(err => dispatch(fetchOwnedActions.failure(err)))
-  
+      .then((usr) => dispatch(fetchOwnedActions.success(usr)))
+      .then(() => event.detail.complete())
+      .catch((err) => dispatch(fetchOwnedActions.failure(err)));
+
     fetchClubs(token)
-    .then(usr => dispatch(fetchClubsActions.success(usr)))
-        .then(() => event.detail.complete())
-        .catch(err => dispatch(fetchClubsActions.failure(err)))
-  }
+      .then((usr) => dispatch(fetchClubsActions.success(usr)))
+      .then(() => event.detail.complete())
+      .catch((err) => dispatch(fetchClubsActions.failure(err)));
+  };
 
-
-  const RenderListOfClubs = (props: {clubs: Club[]}) => {
+  const RenderListOfClubs = (props: { clubs: Club[] }) => {
     if (props.clubs && props.clubs.length > 0) {
       const list = props.clubs.map((club) => {
         return (
@@ -89,15 +96,18 @@ const ClubPage: React.FC = (props) => {
             </IonCardHeader>
             <IonCardContent>
               <IonItem>Mitgliederanzahl: {club.memberIDs.length}</IonItem>
-              
-              <IonButton onClick={() => onSetClubActive(club.id)} disabled={selectedClub === club.id}>
-                { selectedClub !== club.id ? "Select Club" : "Selected" }
+
+              <IonButton
+                onClick={() => onSetClubActive(club.id)}
+                disabled={selectedClub === club.id}
+              >
+                {selectedClub !== club.id ? "Select Club" : "Selected"}
               </IonButton>
             </IonCardContent>
           </IonCard>
         );
       });
-      return <>{list}</>
+      return <>{list}</>;
     }
     return null;
   };
@@ -107,15 +117,19 @@ const ClubPage: React.FC = (props) => {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonMenuButton />
+            <IonMenuButton
+              onClick={() =>
+                selectedClub ? onSetClubActive(selectedClub) : ""
+              }
+            />
           </IonButtons>
           <IonTitle>Meine Clubs</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-      <IonRefresher slot="fixed" onIonRefresh={doRefresh}>
-                    <IonRefresherContent></IonRefresherContent>
-                </IonRefresher>
+        <IonRefresher slot="fixed" onIonRefresh={doRefresh}>
+          <IonRefresherContent></IonRefresherContent>
+        </IonRefresher>
         <IonHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Club</IonTitle>

@@ -92,23 +92,20 @@ const Menu: React.FC = () => {
   const { activeClubID } = useSelector((state: RootState) => state.activeCl);
   const [selectedClub, setSCID] = useState({} as Club);
   const dispatch = useDispatch();
-  const store = useStore();
-  const token: String = "";
   var securityItem = null;
 
   useEffect(() => {
     console.log(activeClubID);
-
     if (authenticationInformation && activeClubID != "") {
       console.log("OKDOKI");
-      console.log(authenticationInformation);
-
       fetchClub(authenticationInformation?.token, activeClubID).then((c) => {
+        console.log(c);
+
         setSCID(c);
       });
-    }
 
-    console.log("Selected Club", selectedClub);
+      console.log(selectedClub);
+    }
   }, [activeClubID]);
 
   if (isNotExpired(authenticationInformation)) {
@@ -118,7 +115,7 @@ const Menu: React.FC = () => {
       iosIcon: logOutOutline,
       mdIcon: logOutSharp,
       onClick: () => {
-        setSCID({} as Club)
+        setSCID({} as Club);
         dispatch(loggedOut());
       },
     };
@@ -143,10 +140,8 @@ const Menu: React.FC = () => {
       iosIcon: alarmOutline,
       mdIcon: alarmSharp,
     });
-    
-    if (
-      user?.ownedClub !== null
-    ) {
+
+    if (user?.id == selectedClub.ownerID) {
       AddClubAdminMenu({
         title: "Events",
         url: "/events",
@@ -167,7 +162,7 @@ const Menu: React.FC = () => {
         iosIcon: peopleOutline,
         mdIcon: peopleSharp,
       });
-    } 
+    }
     if (user?.role === "admin") {
       AddAdminMenu({
         title: "Users",
@@ -218,15 +213,14 @@ const Menu: React.FC = () => {
               </IonMenuToggle>
             );
           })}
-          {
-            isNotExpired(authenticationInformation) && 
+          {isNotExpired(authenticationInformation) && (
             <IonNote className="menu_note">
-            {selectedClub.name
-              ? "Club: " + selectedClub.name
-              : "Select a Club"}
-          </IonNote>
-          }
-          
+              {selectedClub.name
+                ? "Club: " + selectedClub.name
+                : "Select a Club"}
+            </IonNote>
+          )}
+
           {secureAppPage.map((appPage, index) => {
             return (
               <IonMenuToggle key={index} autoHide={false}>
@@ -249,10 +243,9 @@ const Menu: React.FC = () => {
               </IonMenuToggle>
             );
           })}
-          {user?.ownedClub && 
-          <IonNote className="menu_note">
-           {"Manage deinen Club"}
-          </IonNote> }
+          {user?.ownedClub && (
+            <IonNote className="menu_note">{"Manage deinen Club"}</IonNote>
+          )}
           {clubAdminFunctions.map((appPage, index) => {
             return (
               <IonMenuToggle key={index} autoHide={false}>
@@ -275,9 +268,9 @@ const Menu: React.FC = () => {
               </IonMenuToggle>
             );
           })}
-           {user?.role === "admin" &&  <IonNote className="menu_note">
-            {"Admin"}
-          </IonNote>}
+          {user?.role === "admin" && (
+            <IonNote className="menu_note">{"Admin"}</IonNote>
+          )}
           {adminFunctions.map((appPage, index) => {
             return (
               <IonMenuToggle key={index} autoHide={false}>
