@@ -142,7 +142,6 @@ namespace ClubOrganizerAPI.Controllers
         }
 
         [HttpGet("GetClub")]
-        [Authorize(Roles = "User")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Club))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<Club>> GetClub([Required][FromQuery] string clubId)
