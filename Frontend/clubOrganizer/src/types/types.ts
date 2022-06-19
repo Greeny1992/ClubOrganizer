@@ -64,3 +64,7 @@ export interface Club {
 }
 
 export type Clubs = Club[];
+
+export interface CreateClub {
+    name: string
+}

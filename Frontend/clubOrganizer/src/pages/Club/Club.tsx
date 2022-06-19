@@ -5,9 +5,11 @@ import {
   IonCardContent,
   IonCardHeader,
   IonCardTitle,
+  IonCol,
   IonContent,
   IonGrid,
   IonHeader,
+  IonIcon,
   IonItem,
   IonMenuButton,
   IonNote,
@@ -19,8 +21,10 @@ import {
   IonToolbar,
   RefresherEventDetail,
 } from "@ionic/react";
+import { add } from "ionicons/icons";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { RouteComponentProps } from "react-router";
 import { ThunkDispatch } from "redux-thunk";
 import {
   fetchClubsAction,
@@ -40,7 +44,7 @@ import { loadUserData } from "../../services/rest/security";
 import { Club } from "../../types/types";
 import "./Club.css";
 
-const ClubPage: React.FC = (props) => {
+const ClubPage: React.FC<RouteComponentProps> = ({ history }) => {
   const { owned, myclubs } = useSelector((state: RootState) => state.clubs);
   const token = useSelector(
     (s: RootState) => s.user.authenticationInformation!.token || ""
@@ -84,6 +88,22 @@ const ClubPage: React.FC = (props) => {
       .then((usr) => dispatch(fetchClubsActions.success(usr)))
       .then(() => event.detail.complete())
       .catch((err) => dispatch(fetchClubsActions.failure(err)));
+  };
+
+  const AddOwnedClub = () => {
+    return (
+      <IonCard onClick={() => history.push("/club/add")}>
+        <IonCardHeader>
+          <IonCardTitle>Add Your Own Club !</IonCardTitle>
+        </IonCardHeader>
+        <IonCardContent>
+          <IonIcon
+            style={{ height: "40px", width: "40px" }}
+            icon={add}
+          ></IonIcon>
+        </IonCardContent>
+      </IonCard>
+    );
   };
 
   const RenderListOfClubs = (props: { clubs: Club[] }) => {
@@ -149,6 +169,8 @@ const ClubPage: React.FC = (props) => {
               <RenderListOfClubs clubs={myclubs} />
             </>
           )}
+
+          {owned == null ? <AddOwnedClub /> : <></>}
         </IonGrid>
       </IonContent>
     </IonPage>
