@@ -36,7 +36,6 @@ import { SecureRoute } from "./components/SecurePage";
 import Login from "./pages/Login/Login";
 import Menu from "./components/Menu";
 import Users from "./pages/AdminPages/Users/Users";
-import Register from "./pages/AdminPages/Users/Register";
 import RegisterGroup from "./pages/AdminPages/Groups/RegisterGroup";
 import ClubPage from "./pages/Club/Club";
 import Members from "./pages/Members/Members";
@@ -45,6 +44,7 @@ import Events from "./pages/AdminPages/Events/Events";
 import RegisterEvents from "./pages/AdminPages/Events/RegisterEvents";
 import AddMembers from "./pages/Members/AddMembers";
 import Termine from "./pages/Termine/Termine";
+import Register from "./pages/Register/Register";
 
 setupIonicReact();
 
@@ -54,6 +54,7 @@ const App: React.FC = () => (
       <Menu />
       <IonRouterOutlet id="main">
         <Route path="/login" component={Login} exact={true} />
+        <Route path="/register" component={Register("add")} exact={true} />
         <SecureRoute path="/profile" component={Profile} exact={true} />
         <SecureRoute path="/club" component={ClubPage} exact={true} />
         <SecureRoute path="/termine" component={Termine} exact={true} />
@@ -82,16 +83,6 @@ const App: React.FC = () => (
           exact={true}
         />
         <SecureRoute path="/users" component={Users} exact={true} />
-        <SecureRoute
-          path="/users/add"
-          component={Register("add")}
-          exact={true}
-        />
-        <SecureRoute
-          path="/users/edit/:id"
-          component={Register("edit")}
-          exact={true}
-        />
         <Route path="/" exact={true}>
           <Redirect to="/profile" />
         </Route>

@@ -64,10 +64,8 @@ export const fetchUsers = (token: string | null) =>
       return returnval;
     });
 
-export const register = (user: User, token: string | null) =>
-  endpoint.post<User, User>("/User/CreateUser", user, {
-    headers: createAuthenticationHeader(token),
-  });
+export const register = (user: User) =>
+  endpoint.post<User, User>("/User/CreateUser", user);
 
 export const fetchMembersFromClub = (token: string | null, clubId: string) => 
 endpoint.get<UserList | ErrorMessage>(`${config.getUserURI}ListMemberFromClub?clubId=${clubId}`, {
