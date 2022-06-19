@@ -16,7 +16,7 @@ namespace ClubOrganizerAPI.Controllers
         MongoDBUnitOfWork mongo = MonitoringFacade.Instance.MongoDB;
 
         [HttpPost("CreateClub")]
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Club))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<Club>> CreateClub([Required][FromBody] Club club)
@@ -121,6 +121,7 @@ namespace ClubOrganizerAPI.Controllers
         }
 
         [HttpPost("AddMemberToClub")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Club))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<Club>> AddMemberToClub([Required][FromQuery] string userId, [Required][FromQuery] string clubId)
@@ -142,6 +143,7 @@ namespace ClubOrganizerAPI.Controllers
         }
 
         [HttpGet("GetClub")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Club))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<Club>> GetClub([Required][FromQuery] string clubId)

@@ -36,7 +36,54 @@ namespace ClubOrganizerAPI.Controllers
 
         }
 
+        [HttpPatch("PatchEvent")]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Event))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<Event>> PatchEvent([FromQuery][Required] String id, [Required][FromBody] Event eventData)
+        {
+            Event ev = await mongo.Event.FindByIdAsync(id);
+
+
+            if (ev != null)
+            {
+                Event patch = await mongo.Event.UpdateOneAsync(eventData);
+
+
+                return patch;
+            }
+            else
+            {
+                return NotFound();
+            }
+
+        }
+
+        [HttpDelete("DeleteEvent")]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Event))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<string>> DeleteEvent([FromQuery][Required] String id)
+        {
+            Event ev = await mongo.Event.FindByIdAsync(id);
+
+
+            if (ev != null)
+            {
+                await mongo.Event.DeleteByIdAsync(id);
+
+
+                return "Deleted Successfully";
+            }
+            else
+            {
+                return NotFound();
+            }
+
+        }
+
         [HttpGet("ListEvents")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Event>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<List<Event>>> ListEvents()

@@ -101,9 +101,8 @@ const Events: React.FC<RouteComponentProps> = ({ history }) => {
         return (
           <IonCard
             className="userCard"
-            key={
-              value.id
-            } /* onClick={() => history.push('/events/edit/' +value.id)} */
+            key={value.id}
+            onClick={() => history.push("/events/edit/" + value.id)}
           >
             <IonCardHeader>
               <IonCardTitle>Event: {value.name}</IonCardTitle>

@@ -44,6 +44,8 @@ import {
   fetchOwnedAction,
   fetchOwnedActions,
 } from "../../../services/actions/club";
+import { deleteEvent, patchEvent } from "../../../services/rest/event";
+import { warning } from "ionicons/icons";
 
 const form = (mode: string): FormDescription<Event> => ({
   name: "registrationGroups",
@@ -128,12 +130,45 @@ export default (
           console.log(selectedEvent);
         }
       }
-    });
+    }, []);
 
     const submit = (event: Event) => {
       dispatch(loading(true));
       if (owned != null) {
-        addEventToClub(token, owned.id, event)
+        if (mode == "add") {
+          addEventToClub(token, owned.id, event)
+            .then((result: {}) => {
+              fetchOwnedClub(token)
+                .then((usr) => dispatch(fetchOwnedActions.success(usr)))
+                .catch((err) => dispatch(fetchOwnedActions.failure(err)));
+              executeDelayed(100, () => history.replace("/events"));
+            })
+            .catch((err: Error) => {
+              dispatch(error(err.message));
+            })
+            .finally(() => dispatch(loading(false)));
+        }
+
+        if (mode == "edit") {
+          patchEvent(token, match.params.id, event)
+            .then((result: {}) => {
+              fetchOwnedClub(token)
+                .then((usr) => dispatch(fetchOwnedActions.success(usr)))
+                .catch((err) => dispatch(fetchOwnedActions.failure(err)));
+              executeDelayed(100, () => history.replace("/events"));
+            })
+            .catch((err: Error) => {
+              dispatch(error(err.message));
+            })
+            .finally(() => dispatch(loading(false)));
+        }
+      }
+    };
+
+    const deleteCurrentEvent = () => {
+      dispatch(loading(true));
+      if (owned != null) {
+        deleteEvent(token, match.params.id)
           .then((result: {}) => {
             fetchOwnedClub(token)
               .then((usr) => dispatch(fetchOwnedActions.success(usr)))
@@ -155,9 +190,21 @@ export default (
               <IonBackButton defaultHref="/login" />
             </IonButtons>
             <IonTitle>
-              {mode === "add" ? "New" : "Edit"} Group{" "}
+              {mode === "add" ? "New" : "Edit"} Event{" "}
               {mode === "edit" ? selectedEvent?.name : ""}
             </IonTitle>
+            {mode === "edit" && token != null ? (
+              <IonButtons slot="primary">
+                <IonButton
+                  className="deleteButton"
+                  onClick={() => deleteCurrentEvent()}
+                >
+                  Delete
+                </IonButton>
+              </IonButtons>
+            ) : (
+              <></>
+            )}
           </IonToolbar>
         </IonHeader>
         <IonContent>

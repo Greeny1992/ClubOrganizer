@@ -89,9 +89,8 @@ const Groups: React.FC<RouteComponentProps> = ({ history }) => {
         return (
           <IonCard
             className="userCard"
-            key={
-              value.id
-            } /* onClick={() => history.push('/groups/edit/' +value.id)} */
+            key={value.id}
+            onClick={() => history.push("/groups/edit/" + value.id)}
           >
             <IonCardHeader>
               <IonCardTitle>Gruppe: {value.name}</IonCardTitle>

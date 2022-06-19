@@ -55,7 +55,9 @@ namespace Context.Repos.Concrete
                         }
                     }
                     clubFromdb.Events = newEv;
-                } else if(clubFromdb.Groups.Any())
+                }
+                
+                if(clubFromdb.Groups.Any())
                 {
                     var newGr = new List<Group>();
                     foreach (var gr in clubFromdb.Groups)
@@ -136,7 +138,6 @@ namespace Context.Repos.Concrete
             }
             return null;
         }
-
         
     }
 }
