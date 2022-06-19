@@ -86,7 +86,6 @@ const Members: React.FC<RouteComponentProps> = ({ history }) => {
 
   const NoValuesInfo = () => !isLoading && owned?.memberIDs.length == 0 ?
         (<IonCard>
-            <img src='assets/images/img.png'></img>
             <IonCardHeader>
                 <IonCardTitle>No Members found...</IonCardTitle>
             </IonCardHeader>
@@ -115,7 +114,7 @@ const doRefresh = (event: CustomEvent<RefresherEventDetail>) => {
                                             <IonRow> <IonCol>Email:</IonCol> <IonCol>{value.email}</IonCol></IonRow>
                                             <IonRow> <IonCol>Username:</IonCol> <IonCol>{value.userName}</IonCol></IonRow>
                                             <IonRow> <IonCol>Active:</IonCol> <IonCol>{activeState}</IonCol></IonRow>
-                                            <IonRow> <IonCol>Gruppen:</IonCol> <IonCol>{userGroups}</IonCol></IonRow>
+                                            <IonRow> <IonCol>Gruppen:</IonCol> <IonCol>{owned?.groups.filter(grp => userGroups.includes(grp?.id ?? "")).map(value => {return (<IonRow>{value.name}</IonRow>)})}</IonCol></IonRow>
                                         </IonGrid>
                                     </IonCardContent>
                                 </IonCardHeader>

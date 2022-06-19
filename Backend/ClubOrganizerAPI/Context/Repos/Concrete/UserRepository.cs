@@ -69,21 +69,18 @@ namespace Context.Repos
             return document;
         }
 
-        public async Task<User> AddGroupToUser(string userId, string groupId)
+        public async Task<User> AddOrUpdateGroupsToUser(string userId, List<string> groupIds)
         {
             User userFromdb = await base.FindByIdAsync(userId);
             if(userFromdb != null)
             {
-                Group groupFromdb = await mongo.Group.FindByIdAsync(groupId);
-                if(groupFromdb != null)
+                if(userFromdb.Groups == null)
                 {
-                    if(userFromdb.Groups == null)
-                    {
-                        userFromdb.Groups = new List<Group>();
-                    }
-                    userFromdb.Groups.Add(groupFromdb);
-                    return await base.UpdateOneAsync(userFromdb);
+                    userFromdb.Groups = new List<string>();
                 }
+                userFromdb.Groups = groupIds;
+                return await base.UpdateOneAsync(userFromdb);
+                
             }
             return null;
         }
