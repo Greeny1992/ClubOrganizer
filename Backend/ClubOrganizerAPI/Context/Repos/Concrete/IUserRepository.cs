@@ -7,7 +7,7 @@ namespace Context.Repos
 
         Task<User> Login(String username, String password);
 
-        Task<User> AddGroupToUser(string userId, string groupId);
+        Task<User> AddOrUpdateGroupsToUser(string userId, List<string> groupIds);
 
 
         Task<List<User>> ListMemberFromClub(string clubId);

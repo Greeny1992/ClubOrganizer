@@ -83,8 +83,8 @@ endpoint.get<UserList | ErrorMessage>(`${config.getUserURI}ListMemberFromClub?cl
     return returnval;
   });
 
-  export const addGroupToMember = (token: string | null, memberId: string, groupIds: string[]) => 
-  endpoint.post<User | ErrorMessage>(`${config.getUserURI}AddGroupToMember?memberId=${memberId}`, {groupIds}, {
+  export const addOrUpdateGroupToMember = (token: string | null, userId: string, groupIds: string[]) => 
+  endpoint.post<User | ErrorMessage>(`${config.getUserURI}AddOrUpdateGroupsToUser?userId=${userId}`, {groupIds}, {
     headers: createAuthenticationHeader(token),
   })
   .then((r) => {

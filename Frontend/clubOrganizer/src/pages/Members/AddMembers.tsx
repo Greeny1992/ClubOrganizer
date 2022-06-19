@@ -32,7 +32,8 @@ import {
   import { BuildForm, FormDescription } from "../../utils/form-builder";
   import { Storage } from "@capacitor/storage";
   import {
-    addGroupToMember,
+  
+    addOrUpdateGroupToMember,
     fetchMembersFromClub,
     fetchUserByEmail,
   } from "../../services/rest/users";
@@ -85,6 +86,7 @@ import {
         fetchUserByEmail(authenticationInformation?.token, searchMail)
           .then((user) => {
             setSearchResultUser(user);
+            setSelectedGroups(owned?.groups.filter(grp => user.groups.includes(grp?.id ?? "")))
           })
           .catch((err) => present("Leider kein User gefunden", 3000))
           .finally(() => dispatch(loading(false)));
@@ -106,8 +108,8 @@ import {
             key: "ownedClub",
             value: JSON.stringify(data && typeof data === "object" ? data : {}),
           });
-        if(selectedGroups && selectedGroups?.length > 0) {
-          addGroupToMember(authenticationInformation?.token)
+        if(selectedGroups && selectedGroups?.length > 0 && searchResultUser.id) {
+          addOrUpdateGroupToMember(authenticationInformation?.token,searchResultUser.id, selectedGroups.map(grp => grp.id ?? ""))
         }
   
           fetchOwnedClub(token)
@@ -165,7 +167,7 @@ import {
           <IonLabel>Gruppen</IonLabel>
           <IonSelect disabled={isAlreadyMember} value={selectedGroups} multiple={true} cancelText="Abbrechen" okText="Gruppen passen!" onIonChange={e => setSelectedGroups(e.detail.value)}>
             {owned?.groups!.map(value => {
-              return <IonSelectOption value={value}>{value.description}</IonSelectOption>
+              return <IonSelectOption  key={value.id} value={value}>{value.description}</IonSelectOption>
             })}
           </IonSelect>
         </IonItem>
