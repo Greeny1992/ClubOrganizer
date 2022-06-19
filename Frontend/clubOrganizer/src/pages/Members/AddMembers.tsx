@@ -32,6 +32,7 @@ import {
   import { BuildForm, FormDescription } from "../../utils/form-builder";
   import { Storage } from "@capacitor/storage";
   import {
+    addGroupToMember,
     fetchMembersFromClub,
     fetchUserByEmail,
   } from "../../services/rest/users";
@@ -105,6 +106,9 @@ import {
             key: "ownedClub",
             value: JSON.stringify(data && typeof data === "object" ? data : {}),
           });
+        if(selectedGroups && selectedGroups?.length > 0) {
+          addGroupToMember(authenticationInformation?.token)
+        }
   
           fetchOwnedClub(token)
                       .then(usr => dispatch(fetchOwnedActions.success(usr)))
@@ -159,7 +163,7 @@ import {
         return (
           <IonItem>
           <IonLabel>Gruppen</IonLabel>
-          <IonSelect value={selectedGroups} multiple={true} cancelText="Abbrechen" okText="Gruppen passen!" onIonChange={e => setSelectedGroups(e.detail.value)}>
+          <IonSelect disabled={isAlreadyMember} value={selectedGroups} multiple={true} cancelText="Abbrechen" okText="Gruppen passen!" onIonChange={e => setSelectedGroups(e.detail.value)}>
             {owned?.groups!.map(value => {
               return <IonSelectOption value={value}>{value.description}</IonSelectOption>
             })}
