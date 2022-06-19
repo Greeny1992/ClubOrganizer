@@ -86,7 +86,6 @@ const Members: React.FC<RouteComponentProps> = ({ history }) => {
 
   const NoValuesInfo = () => !isLoading && owned?.memberIDs.length == 0 ?
         (<IonCard>
-            <img src='assets/images/img.png'></img>
             <IonCardHeader>
                 <IonCardTitle>No Members found...</IonCardTitle>
             </IonCardHeader>

@@ -82,3 +82,17 @@ endpoint.get<UserList | ErrorMessage>(`${config.getUserURI}ListMemberFromClub?cl
     console.log(returnval);
     return returnval;
   });
+
+  export const addGroupToMember = (token: string | null, memberId: string, groupIds: string[]) => 
+  endpoint.post<User | ErrorMessage>(`${config.getUserURI}AddGroupToMember?memberId=${memberId}`, {groupIds}, {
+    headers: createAuthenticationHeader(token),
+  })
+  .then((r) => {
+    if (r.status >= 300) {
+      const { message } = r.data as ErrorMessage;
+      throw new Error(message || r.statusText);
+    }
+    var returnval = r.data as User;
+    console.log(returnval);
+    return returnval;
+  });

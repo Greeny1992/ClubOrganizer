@@ -66,7 +66,6 @@ const Groups: React.FC<RouteComponentProps> = ({ history }) => {
   const NoValuesInfo = () =>
     !isLoading && owned?.groups.length == 0 ? (
       <IonCard>
-        <img src="assets/images/img.png"></img>
         <IonCardHeader>
           <IonCardTitle>No Groups found...</IonCardTitle>
         </IonCardHeader>

@@ -16,6 +16,8 @@ import {
     IonCardHeader,
     IonCardSubtitle,
     IonCardTitle,
+    IonSelectOption,
+    IonSelect,
   } from "@ionic/react";
   import { useEffect, useState } from "react";
   import { useDispatch, useSelector } from "react-redux";
@@ -26,7 +28,7 @@ import {
     UserResult,
   } from "../../services/actions/users";
   import { RootState } from "../../services/reducers";
-  import { Club, User, UserList } from "../../types/types";
+  import { Club, Group, User, UserList } from "../../types/types";
   import { BuildForm, FormDescription } from "../../utils/form-builder";
   import { Storage } from "@capacitor/storage";
   import {
@@ -46,6 +48,7 @@ import {
     const [present, dismiss] = useIonToast();
     const [searchMail, setSearchMail] = useState<string>();
     const [searchResultUser, setSearchResultUser] = useState<User>();
+    const [selectedGroups, setSelectedGroups] = useState<Group[]>();
     const [ownedClub, setOwnedClub] = useState<string>("");
     const [currentMembers, setCurrentMembers] = useState<User[]>();
     const { owned, isLoading, errorMessage } = useSelector((s:RootState) => s.clubs);
@@ -128,6 +131,7 @@ import {
             <IonCardSubtitle>{searchResultUser?.email}</IonCardSubtitle>
           </IonCardHeader>
           <IonCardContent>
+            <ListGroups /> 
             <IonButton
               disabled={isAlreadyMember}
               onClick={() => onClickAddUser()}
@@ -137,6 +141,34 @@ import {
           </IonCardContent>
         </IonCard>
       );
+    };
+
+    const NoValuesInfo = () =>
+    !isLoading && owned?.groups.length == 0 ? (
+      <IonCard>
+        <IonCardHeader>
+          <IonCardTitle>No Groups found...</IonCardTitle>
+        </IonCardHeader>
+      </IonCard>
+    ) : (
+      <></>
+    );
+
+    const ListGroups = () => {
+      if(owned) {
+        return (
+          <IonItem>
+          <IonLabel>Gruppen</IonLabel>
+          <IonSelect value={selectedGroups} multiple={true} cancelText="Abbrechen" okText="Gruppen passen!" onIonChange={e => setSelectedGroups(e.detail.value)}>
+            {owned?.groups!.map(value => {
+              return <IonSelectOption value={value}>{value.description}</IonSelectOption>
+            })}
+          </IonSelect>
+        </IonItem>
+        )
+      } else {
+        return <NoValuesInfo />
+      }
     };
   
     return (
