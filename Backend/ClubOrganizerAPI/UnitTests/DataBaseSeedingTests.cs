@@ -89,9 +89,10 @@ namespace UnitTests
             User cancelUser = await MongoUoW.User.FindOneAsync(x => x.UserName == "AA");
 
             Event ev = await MongoUoW.Event.FindOneAsync(x => x.Name == "testEvent");
+            Club cl = await MongoUoW.Club.FindOneAsync(x => true);
 
-            Event acceptEvent = await MongoUoW.Event.UserAcceptEvent(acceptUser.ID, ev.ID);
-            Event cancleEvent = await MongoUoW.Event.UserCancleEvent(cancelUser.ID, ev.ID);
+            Club acceptEvent = await MongoUoW.Event.UserAcceptEvent(cl.ID,acceptUser.ID, ev.ID);
+            Club cancleEvent = await MongoUoW.Event.UserCancleEvent(cl.ID,cancelUser.ID, ev.ID);
             Assert.NotNull(acceptEvent);
             Assert.NotNull(cancleEvent);
 

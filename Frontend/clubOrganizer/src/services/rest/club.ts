@@ -40,7 +40,7 @@ export const createClub = (token: string | null, cl:CreateClub) =>
       return returnval;
     });
 
-export const fetchClub = (token: string | null, id: string) =>
+export const fetchClub = (token: string | null, id: string) => 
   endpoint
     .get<Club | ErrorMessage>(
       `${config.getClubControllerURI}GetClub?clubId=${id}`,

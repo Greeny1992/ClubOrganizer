@@ -109,11 +109,11 @@ namespace ClubOrganizerAPI.Controllers
 
         [HttpPost("UserAcceptEvent")]
         [Authorize(Roles = "Admin")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Event))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Club))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<Event>> UserAcceptEvent([Required][FromQuery] string userId, [Required][FromQuery] string eventId)
+        public async Task<ActionResult<Club>> UserAcceptEvent([Required][FromQuery] string clubId, [Required][FromQuery] string userId, [Required][FromQuery] string eventId)
         {
-            Event ev = await mongo.Event.UserAcceptEvent(userId, eventId);
+            Club ev = await mongo.Event.UserAcceptEvent(clubId, userId, eventId);
 
             if (ev != null)
             {
@@ -131,11 +131,11 @@ namespace ClubOrganizerAPI.Controllers
 
         [HttpPost("UserCancleEvent")]
         [Authorize(Roles = "Admin")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Event))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Club))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<Event>> UserCancleEvent([Required][FromQuery] string userId, [Required][FromQuery] string eventId)
+        public async Task<ActionResult<Club>> UserCancleEvent([Required][FromQuery] string clubId, [Required][FromQuery] string userId, [Required][FromQuery] string eventId)
         {
-            Event ev = await mongo.Event.UserCancleEvent(userId, eventId);
+            Club ev = await mongo.Event.UserCancleEvent(clubId, userId, eventId);
 
             if (ev != null)
             {

@@ -30,7 +30,7 @@ const formDescription: FormDescription<formData> = {
   fields: [
     {
       name: "username",
-      label: "Email",
+      label: "Username",
       type: "text",
       position: "floating",
       color: "primary",

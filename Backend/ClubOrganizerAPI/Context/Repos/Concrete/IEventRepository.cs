@@ -11,8 +11,8 @@ namespace Context.Repos.Concrete
     {
         Task<Event> FindByName(string name);
 
-        Task<Event> UserAcceptEvent(string userId, string eventId);
+        Task<Club> UserAcceptEvent(string clubId, string userId, string eventId);
 
-        Task<Event> UserCancleEvent(string userId, string eventId);
+        Task<Club> UserCancleEvent(string clubId, string userId, string eventId);
     }
 }

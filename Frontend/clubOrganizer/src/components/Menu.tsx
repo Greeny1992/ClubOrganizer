@@ -96,7 +96,11 @@ const Menu: React.FC = () => {
 
   useEffect(() => {
     console.log(activeClubID);
-    if (authenticationInformation && activeClubID != "") {
+    if (
+      authenticationInformation &&
+      authenticationInformation.token !== "" &&
+      activeClubID != ""
+    ) {
       console.log("OKDOKI");
       fetchClub(authenticationInformation?.token, activeClubID).then((c) => {
         console.log(c);
@@ -107,6 +111,41 @@ const Menu: React.FC = () => {
       console.log(selectedClub);
     }
   }, [activeClubID]);
+
+  useEffect(() => {
+    if (isNotExpired(authenticationInformation)) {
+      if (selectedClub.id && selectedClub.id !== "") {
+        AddMenu({
+          title: "Termine",
+          url: "/termine",
+          iosIcon: listOutline,
+          mdIcon: listSharp,
+        });
+      }
+      if (user && user.ownedClub && user.ownedClub !== "") {
+        AddClubAdminMenu({
+          title: "Events",
+          url: "/events",
+          iosIcon: documentOutline,
+          mdIcon: documentSharp,
+        });
+
+        AddClubAdminMenu({
+          title: "Gruppen",
+          url: "/groups",
+          iosIcon: layersOutline,
+          mdIcon: layersSharp,
+        });
+
+        AddClubAdminMenu({
+          title: "Mitglieder",
+          url: "/members",
+          iosIcon: peopleOutline,
+          mdIcon: peopleSharp,
+        });
+      }
+    }
+  }, [user, selectedClub]);
 
   if (isNotExpired(authenticationInformation)) {
     securityItem = {
@@ -121,13 +160,6 @@ const Menu: React.FC = () => {
     };
 
     AddMenu({
-      title: "Termine",
-      url: "/termine",
-      iosIcon: listOutline,
-      mdIcon: listSharp,
-    });
-
-    AddMenu({
       title: "Profile",
       url: "/profile",
       iosIcon: addOutline,
@@ -140,29 +172,6 @@ const Menu: React.FC = () => {
       iosIcon: alarmOutline,
       mdIcon: alarmSharp,
     });
-
-    if (user?.id == selectedClub.ownerID) {
-      AddClubAdminMenu({
-        title: "Events",
-        url: "/events",
-        iosIcon: documentOutline,
-        mdIcon: documentSharp,
-      });
-
-      AddClubAdminMenu({
-        title: "Gruppen",
-        url: "/groups",
-        iosIcon: layersOutline,
-        mdIcon: layersSharp,
-      });
-
-      AddClubAdminMenu({
-        title: "Mitglieder",
-        url: "/members",
-        iosIcon: peopleOutline,
-        mdIcon: peopleSharp,
-      });
-    }
     if (user?.role === "admin") {
       AddAdminMenu({
         title: "Users",

@@ -110,7 +110,7 @@ const ClubPage: React.FC<RouteComponentProps> = ({ history }) => {
     if (props.clubs && props.clubs.length > 0) {
       const list = props.clubs.map((club) => {
         return (
-          <IonCard>
+          <IonCard key={club.id}>
             <IonCardHeader>
               <IonCardTitle>{club.name}</IonCardTitle>
             </IonCardHeader>

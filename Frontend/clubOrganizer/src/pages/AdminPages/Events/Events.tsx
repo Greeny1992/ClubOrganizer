@@ -25,6 +25,9 @@ import {
   IonRow,
   IonCol,
   IonCardContent,
+  IonAccordion,
+  IonLabel,
+  IonAccordionGroup,
 } from "@ionic/react";
 import { add, information, skull } from "ionicons/icons";
 import "./Events.css";
@@ -66,7 +69,6 @@ const Events: React.FC<RouteComponentProps> = ({ history }) => {
   const NoValuesInfo = () =>
     !isLoading && owned?.groups.length == 0 ? (
       <IonCard>
-        <img src="assets/images/img.png"></img>
         <IonCardHeader>
           <IonCardTitle>No Events found...</IonCardTitle>
         </IonCardHeader>
@@ -92,18 +94,14 @@ const Events: React.FC<RouteComponentProps> = ({ history }) => {
         const endTime = new Date(value.endDateTime).toLocaleTimeString();
         const zusagen =
           value.acceptUsers.length > 0
-            ? value.acceptUsers.map((x) => x.userName + ", ")
+            ? value.acceptUsers.length
             : "keine Zusagen noch!";
         const absagen =
           value.cancelUsers.length > 0
-            ? value.cancelUsers.map((x) => x.userName + ", ")
+            ? value.cancelUsers.length
             : "keine Absagen noch!";
         return (
-          <IonCard
-            className="userCard"
-            key={value.id}
-            onClick={() => history.push("/events/edit/" + value.id)}
-          >
+          <IonCard className="userCard" key={value.id}>
             <IonCardHeader>
               <IonCardTitle>Event: {value.name}</IonCardTitle>
               <IonCardContent>
@@ -130,13 +128,64 @@ const Events: React.FC<RouteComponentProps> = ({ history }) => {
                   </IonRow>
                   <IonRow>
                     {" "}
-                    <IonCol>Zusagen:</IonCol> <IonCol>{zusagen}</IonCol>
+                    <IonCol>
+                      <IonAccordionGroup>
+                        <IonAccordion value="zusagen">
+                          <IonItem slot="header">
+                            <IonLabel>Zusagen: {zusagen}</IonLabel>
+                          </IonItem>
+                          <IonList slot="content">
+                            {value.acceptUsers.map((acu, index) => {
+                              return (
+                                <IonItem
+                                  key={
+                                    (value.id ?? "") + (acu?.id ?? "") + index
+                                  }
+                                >
+                                  <IonLabel>
+                                    {acu.firstname + " " + acu.lastname}
+                                  </IonLabel>
+                                </IonItem>
+                              );
+                            })}
+                          </IonList>
+                        </IonAccordion>
+                      </IonAccordionGroup>{" "}
+                    </IonCol>
                   </IonRow>
                   <IonRow>
                     {" "}
-                    <IonCol>Absagen:</IonCol> <IonCol>{absagen}</IonCol>
+                    <IonCol>
+                      <IonAccordionGroup>
+                        <IonAccordion value="absagen">
+                          <IonItem slot="header">
+                            <IonLabel>Absagen: {absagen}</IonLabel>
+                          </IonItem>
+                          <IonList slot="content">
+                            {value.cancelUsers.map((ccu, index) => {
+                              return (
+                                <IonItem
+                                  key={
+                                    (value.id ?? "") + (ccu?.id ?? "") + index
+                                  }
+                                >
+                                  <IonLabel>
+                                    {ccu.firstname + " " + ccu.lastname}
+                                  </IonLabel>
+                                </IonItem>
+                              );
+                            })}
+                          </IonList>
+                        </IonAccordion>
+                      </IonAccordionGroup>{" "}
+                    </IonCol>
                   </IonRow>
                 </IonGrid>
+                <IonButton
+                  onClick={() => history.push("/events/edit/" + value.id)}
+                >
+                  Bearbeiten
+                </IonButton>
               </IonCardContent>
             </IonCardHeader>
           </IonCard>

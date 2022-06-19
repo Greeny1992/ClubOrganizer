@@ -19,41 +19,107 @@ namespace Context.Repos.Concrete
             return await FindOneAsync(x => x.Name == name);
         }
 
-        public async Task<Event> UserAcceptEvent(string userId, string eventId)
+        public async Task<Club> UserAcceptEvent(string clubId, string userId, string eventId)
         {
-            Event eventFromdb = await base.FindByIdAsync(eventId);
-            if (eventFromdb != null)
+            Club clubFromdb = await mongo.Club.FindByIdAsync(clubId);
+            if (clubFromdb != null)
             {
-                User userFromDb = await mongo.User.FindByIdAsync(userId);
-                if (userFromDb != null)
-                {
-                    if (eventFromdb.AcceptUsers == null)
+                Event eventFromdb = await base.FindByIdAsync(eventId);
+                List<Event> tempClubEvents = new List<Event>();
+                foreach(Event ev in clubFromdb.Events) {
+                    if(ev.ID != eventId)
                     {
-                        eventFromdb.AcceptUsers = new List<User>();
+                        tempClubEvents.Add(ev);
                     }
-                    eventFromdb.AcceptUsers.Add(userFromDb);
-                    return await base.UpdateOneAsync(eventFromdb);
+                } 
+                clubFromdb.Events = tempClubEvents;
+                if (eventFromdb != null)
+                {
+                    User userFromDb = await mongo.User.FindByIdAsync(userId);
+                    if (userFromDb != null)
+                    {
+                        if (eventFromdb.AcceptUsers == null)
+                        {
+                            eventFromdb.AcceptUsers = new List<User>();
+                        }
+                        if (eventFromdb.AcceptUsers.FirstOrDefault(x => x.ID == userFromDb.ID) == null)
+                        {
+                            if (eventFromdb.CancelUsers.FirstOrDefault(x => x.ID == userFromDb.ID) != null)
+                            {
+                                List<User> tempUsers = new List<User>();
+                                foreach (User u in eventFromdb.CancelUsers)
+                                {
+                                    if (u.ID != userFromDb.ID)
+                                    {
+                                        tempUsers.Add(u);
+                                    }
+                                }
+                                eventFromdb.CancelUsers = tempUsers;
+                            }
+                            eventFromdb.AcceptUsers.Add(userFromDb);
+                            eventFromdb = await base.UpdateOneAsync(eventFromdb);
+                        }
+                        clubFromdb.Events.Add(eventFromdb);
+                        return await mongo.Club.UpdateOneAsync(clubFromdb);
+
+                    }
                 }
+
             }
+            
             return null;
         }
 
-        public async Task<Event> UserCancleEvent(string userId, string eventId)
+        public async Task<Club> UserCancleEvent(string clubId, string userId, string eventId)
         {
-            Event eventFromdb = await base.FindByIdAsync(eventId);
-            if (eventFromdb != null)
+            Club clubFromdb = await mongo.Club.FindByIdAsync(clubId);
+            if (clubFromdb != null)
             {
-                User userFromDb = await mongo.User.FindByIdAsync(userId);
-                if (userFromDb != null)
+                Event eventFromdb = await base.FindByIdAsync(eventId);
+                List<Event> tempClubEvents = new List<Event>();
+                foreach (Event ev in clubFromdb.Events)
                 {
-                    if (eventFromdb.CancelUsers == null)
+                    if (ev.ID != eventId)
                     {
-                        eventFromdb.CancelUsers = new List<User>();
+                        tempClubEvents.Add(ev);
                     }
-                    eventFromdb.CancelUsers.Add(userFromDb);
-                    return await base.UpdateOneAsync(eventFromdb);
                 }
+                clubFromdb.Events = tempClubEvents;
+                if (eventFromdb != null)
+                {
+                    User userFromDb = await mongo.User.FindByIdAsync(userId);
+                    if (userFromDb != null)
+                    {
+                        if (eventFromdb.CancelUsers == null)
+                        {
+                            eventFromdb.CancelUsers = new List<User>();
+                        }
+                        if(eventFromdb.CancelUsers.FirstOrDefault(x => x.ID == userFromDb.ID) == null)
+                        {
+                            if(eventFromdb.AcceptUsers.FirstOrDefault(x => x.ID == userFromDb.ID) != null)
+                            {
+                                List<User> tempUsers = new List<User>();
+                                foreach (User u in eventFromdb.AcceptUsers)
+                                {
+                                    if(u.ID != userFromDb.ID)
+                                    {
+                                        tempUsers.Add(u);
+                                    }
+                                }
+                                eventFromdb.AcceptUsers = tempUsers;
+                            }
+                            eventFromdb.CancelUsers.Add(userFromDb);
+                            eventFromdb = await base.UpdateOneAsync(eventFromdb);
+                          
+                        }
+                        clubFromdb.Events.Add(eventFromdb);
+                        return await mongo.Club.UpdateOneAsync(clubFromdb);
+
+                    }
+                }
+
             }
+
             return null;
         }
     }
