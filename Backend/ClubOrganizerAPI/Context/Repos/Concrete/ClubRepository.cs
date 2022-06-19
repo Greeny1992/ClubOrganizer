@@ -120,6 +120,33 @@ namespace Context.Repos.Concrete
             return null;
         }
 
+        public async Task<Club> RemoveMemberFromClub(string clubId, string userId)
+        {
+            Club clubFromdb = await base.FindByIdAsync(clubId);
+            if (clubFromdb != null)
+            {
+                User userFromDb = await mongo.User.FindByIdAsync(userId);
+                if (userFromDb != null)
+                {
+                    if (clubFromdb.MemberIDs == null)
+                    {
+                        clubFromdb.MemberIDs = new List<string>();
+                    }
+                    clubFromdb.MemberIDs.Remove(userFromDb.ID);
+                    clubFromdb = await base.UpdateOneAsync(clubFromdb);
+
+                    userFromDb.Groups = userFromDb.Groups.ToList().Where(g => !clubFromdb.Groups.Contains(g)).ToList();
+
+                    userFromDb.MyClubs.Remove(clubFromdb.ID);
+                    await mongo.User.InsertOrUpdateOneAsync(userFromDb);
+
+                    return clubFromdb;
+                }
+
+            }
+            return null;
+        }
+
         public async Task<Club> AddGroupToClub(string clubId, Group group)
         {
             Club clubFromdb = await base.FindByIdAsync(clubId);

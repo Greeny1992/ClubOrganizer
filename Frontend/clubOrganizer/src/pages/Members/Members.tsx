@@ -43,10 +43,15 @@ import {
   fetchUser,
   fetchUserByEmail,
 } from "../../services/rest/users";
-import { addMemberToClub, fetchOwnedClub } from "../../services/rest/club";
+import {
+  addMemberToClub,
+  fetchOwnedClub,
+  removeMemberFromClub,
+} from "../../services/rest/club";
 import { fetchOwnedActions } from "../../services/actions/club";
 import { add } from "ionicons/icons";
 import { RouteComponentProps } from "react-router";
+import { executeDelayed } from "../../helpers/async-helpers";
 
 const { loading } = BuildForm({} as FormDescription<{ search: string }>);
 
@@ -55,81 +60,143 @@ const Members: React.FC<RouteComponentProps> = ({ history }) => {
     (state: RootState) => state.user
   );
 
-  const { owned, isLoading, errorMessage } = useSelector((s:RootState) => s.clubs);
+  const { owned, isLoading, errorMessage } = useSelector(
+    (s: RootState) => s.clubs
+  );
   const [members, setMembers] = useState([] as User[]);
-  const token = useSelector((s:RootState) => s.user.authenticationInformation!.token || '');
+  const token = useSelector(
+    (s: RootState) => s.user.authenticationInformation!.token || ""
+  );
   const thunkDispatch: ThunkDispatch<RootState, null, UserResult> =
     useDispatch();
   const dispatch = useDispatch();
 
-
   useEffect(() => {
     if (authenticationInformation && owned) {
       fetchOwnedClub(token)
-        .then(club => dispatch(fetchOwnedActions.success(club)))
-        .then(data => getUsersFromAPI(data.payload.memberIDs))
-        .catch(err => dispatch(fetchOwnedActions.failure(err)))
+        .then((club) => dispatch(fetchOwnedActions.success(club)))
+        .then((data) => getUsersFromAPI(data.payload.memberIDs))
+        .catch((err) => dispatch(fetchOwnedActions.failure(err)));
     }
   }, []);
 
-  const getUsersFromAPI = (listOfUserIDs:string[])=>{
-    let newUserList = [] as User[]
-    listOfUserIDs.forEach((user)=>{
-        fetchUser(token, user)
-        .then(usr => {newUserList.push(usr); console.log(newUserList);
+  const getUsersFromAPI = (listOfUserIDs: string[]) => {
+    let newUserList = [] as User[];
+    listOfUserIDs.forEach((user) => {
+      fetchUser(token, user)
+        .then((usr) => {
+          newUserList.push(usr);
+          console.log(newUserList);
         })
-        .catch(err => dispatch(fetchUserActions.success(err)))
-    })
-    setMembers(newUserList)
-  }
+        .catch((err) => dispatch(fetchUserActions.success(err)));
+    });
+    setMembers(newUserList);
+  };
 
+  const NoValuesInfo = () =>
+    !isLoading && owned?.memberIDs.length == 0 ? (
+      <IonCard>
+        <img src="assets/images/img.png"></img>
+        <IonCardHeader>
+          <IonCardTitle>No Members found...</IonCardTitle>
+        </IonCardHeader>
+      </IonCard>
+    ) : (
+      <></>
+    );
 
-  const NoValuesInfo = () => !isLoading && owned?.memberIDs.length == 0 ?
-        (<IonCard>
-            <img src='assets/images/img.png'></img>
-            <IonCardHeader>
-                <IonCardTitle>No Members found...</IonCardTitle>
-            </IonCardHeader>
-        </IonCard>) : (<></>)
-
-const doRefresh = (event: CustomEvent<RefresherEventDetail>) => {
-    console.log('Begin async operation on Value List');
+  const doRefresh = (event: CustomEvent<RefresherEventDetail>) => {
+    console.log("Begin async operation on Value List");
     fetchOwnedClub(token)
-        .then(usr => dispatch(fetchOwnedActions.success(usr)))
-        .then(() => event.detail.complete())
-        .catch(err => dispatch(fetchOwnedActions.failure(err)))
-}
+      .then((usr) => dispatch(fetchOwnedActions.success(usr)))
+      .then(() => event.detail.complete())
+      .catch((err) => dispatch(fetchOwnedActions.failure(err)));
+  };
 
-    const ListMembers = () => {
+  const removeFromClub = (id: string) => {
+    if (owned && id !== "none") {
+      removeMemberFromClub(token, owned?.id, id);
 
-        if (members){
-            const items = members.map(value => {
-              const activeState = value.active? "Aktiv" : "Inaktiv"
-              const userGroups = value.groups.length > 0 ? value.groups : "Noch in keinen Gruppen!"
-                return (
-                            <IonCard className='userCard' key={value.id} /* onClick={() => history.push('/groups/edit/' +value.id)} */>
-                                <IonCardHeader>
-                                    <IonCardTitle>Name: {value.firstname + ' ' + value.lastname}</IonCardTitle>
-                                    <IonCardContent>
-                                        <IonGrid>
-                                            <IonRow> <IonCol>Email:</IonCol> <IonCol>{value.email}</IonCol></IonRow>
-                                            <IonRow> <IonCol>Username:</IonCol> <IonCol>{value.userName}</IonCol></IonRow>
-                                            <IonRow> <IonCol>Active:</IonCol> <IonCol>{activeState}</IonCol></IonRow>
-                                            <IonRow> <IonCol>Gruppen:</IonCol> <IonCol>{userGroups}</IonCol></IonRow>
-                                        </IonGrid>
-                                    </IonCardContent>
-                                </IonCardHeader>
-                            </IonCard>  
-                );
-            });
-            return items.length > 0 ? <IonGrid><IonRow>{items}</IonRow></IonGrid> : <NoValuesInfo />;
-        }
-        else {
-            return <NoValuesInfo/>;
-        }
+      executeDelayed(100, () =>
+        fetchOwnedClub(token)
+          .then((usr) => dispatch(fetchOwnedActions.success(usr)))
+          .catch((err) => dispatch(fetchOwnedActions.failure(err)))
+      );
+    }
+  };
 
-        
-    };
+  const ListMembers = () => {
+    if (members) {
+      const items = members.map((value) => {
+        const activeState = value.active ? "Aktiv" : "Inaktiv";
+        const userGroups =
+          value.groups.length > 0 ? value.groups : "Noch in keinen Gruppen!";
+        return (
+          <IonCard
+            className="userCard"
+            key={
+              value.id
+            } /* onClick={() => history.push('/groups/edit/' +value.id)} */
+          >
+            <IonCardHeader>
+              <IonRow>
+                <IonCol>
+                  <IonCardTitle>
+                    Name: {value.firstname + " " + value.lastname}
+                  </IonCardTitle>
+                </IonCol>
+                <IonCol>
+                  {value.id ? (
+                    <IonButtons>
+                      <IonButton
+                        onClick={() =>
+                          removeFromClub(value.id ? value.id : "none")
+                        }
+                        className="deleteButton"
+                      >
+                        Remove
+                      </IonButton>
+                    </IonButtons>
+                  ) : (
+                    <></>
+                  )}
+                </IonCol>
+              </IonRow>
+            </IonCardHeader>
+            <IonCardContent>
+              <IonGrid>
+                <IonRow>
+                  {" "}
+                  <IonCol>Email:</IonCol> <IonCol>{value.email}</IonCol>
+                </IonRow>
+                <IonRow>
+                  {" "}
+                  <IonCol>Username:</IonCol> <IonCol>{value.userName}</IonCol>
+                </IonRow>
+                <IonRow>
+                  {" "}
+                  <IonCol>Active:</IonCol> <IonCol>{activeState}</IonCol>
+                </IonRow>
+                <IonRow>
+                  {" "}
+                  <IonCol>Gruppen:</IonCol> <IonCol>{userGroups}</IonCol>
+                </IonRow>
+              </IonGrid>
+            </IonCardContent>
+          </IonCard>
+        );
+      });
+      return items.length > 0 ? (
+        <IonGrid>
+          <IonRow>{items}</IonRow>
+        </IonGrid>
+      ) : (
+        <NoValuesInfo />
+      );
+    } else {
+      return <NoValuesInfo />;
+    }
+  };
   return (
     <IonPage>
       <IonHeader>
@@ -138,18 +205,18 @@ const doRefresh = (event: CustomEvent<RefresherEventDetail>) => {
             <IonMenuButton />
           </IonButtons>
           <IonButtons slot="primary">
-                        <IonButton onClick={() => history.push('/members/add')}>
-                            <IonIcon slot="icon-only" icon={add}/>
-                        </IonButton>
-                    </IonButtons>
+            <IonButton onClick={() => history.push("/members/add")}>
+              <IonIcon slot="icon-only" icon={add} />
+            </IonButton>
+          </IonButtons>
           <IonTitle>Clubmitglieder</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-      <IonRefresher slot="fixed" onIonRefresh={doRefresh}>
-                    <IonRefresherContent></IonRefresherContent>
-                </IonRefresher>
-      <ListMembers/>
+        <IonRefresher slot="fixed" onIonRefresh={doRefresh}>
+          <IonRefresherContent></IonRefresherContent>
+        </IonRefresher>
+        <ListMembers />
       </IonContent>
     </IonPage>
   );

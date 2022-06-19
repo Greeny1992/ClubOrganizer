@@ -105,6 +105,19 @@ export const addMemberToClub = (token: string | null, clubId: string, userId: st
     return returnval;
   });
 
+  export const removeMemberFromClub = (token: string | null, clubId: string, userId: string) => 
+  endpoint.post<Club | ErrorMessage>(`${config.getClubControllerURI}RemoveMemberFromClub?userId=${userId}&clubId=${clubId}`, {} ,{
+    headers: createAuthenticationHeader(token)
+  }).then((r) => {
+    if (r.status >= 300) {
+      const { message } = r.data as ErrorMessage;
+      throw new Error(message || r.statusText);
+    }
+    var returnval = r.data as Club;
+    console.log(returnval);
+    return returnval;
+  });
+
   export const addGroupToClub = (token:string | null, clubId: string, group:Group) => 
   endpoint.post<Club | ErrorMessage> (`${config.getClubControllerURI}CreateGroupForClub?clubId=${clubId}`, group,{
     headers: createAuthenticationHeader(token)

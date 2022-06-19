@@ -15,6 +15,8 @@ namespace Context.Repos.Concrete
 
         Task<Club> AddUserToClub(string clubId, string userId);
 
+        Task<Club> RemoveMemberFromClub(string clubId, string userId);
+
         Task<Club> AddGroupToClub(string clubId, Group group);
     }
 }

@@ -32,6 +32,21 @@ export const fetchUser = (token: string | null, name: string) =>
       return returnval;
     });
 
+    export const patchUser = (token: string | null, name: string, user:User) =>
+    endpoint
+      .patch<User | ErrorMessage>(`${config.getUserURI}PatchUser?id=${name}`, user, {
+        headers: createAuthenticationHeader(token),
+      })
+      .then((r) => {
+        if (r.status >= 300) {
+          const { message } = r.data as ErrorMessage;
+          throw new Error(message || r.statusText);
+        }
+        var returnval = r.data as User;
+        console.log(returnval);
+        return returnval;
+      });
+
 export const fetchUserByEmail = (token: string | null, email: string) =>
     endpoint
       .get<User | ErrorMessage>(`${config.getUserURI}GetUserByEmail?email=${email}`, {

@@ -60,6 +60,29 @@ namespace ClubOrganizerAPI.Controllers
 
         }
 
+        [HttpPatch("PatchUser")]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<User>> PatchUser([FromQuery][Required] String id, [Required][FromBody] User user)
+        {
+            User usr = await mongo.User.FindByIdAsync(id);
+
+
+            if (usr != null)
+            {
+                User patch = await mongo.User.UpdateOneAsync(user);
+
+
+                return patch;
+            }
+            else
+            {
+                return NotFound();
+            }
+
+        }
+
 
         [HttpGet("ListUsers")]
         [Authorize(Roles = "Admin")]

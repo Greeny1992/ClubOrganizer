@@ -142,6 +142,28 @@ namespace ClubOrganizerAPI.Controllers
 
         }
 
+        [HttpPost("RemoveMemberFromClub")]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Club))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<Club>> RemoveMemberFromClub([Required][FromQuery] string userId, [Required][FromQuery] string clubId)
+        {
+            Club cl = await mongo.Club.RemoveMemberFromClub(clubId, userId);
+
+
+            if (cl != null)
+            {
+
+
+                return cl;
+            }
+            else
+            {
+                return NotFound();
+            }
+
+        }
+
         [HttpGet("GetClub")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Club))]
