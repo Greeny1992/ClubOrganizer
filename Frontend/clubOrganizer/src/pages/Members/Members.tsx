@@ -27,7 +27,7 @@ import {
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "redux-thunk";
-import { isOfType } from "typesafe-actions";
+import { action, isOfType } from "typesafe-actions";
 import {
   fetchUserAction,
   fetchUserActions,
@@ -52,6 +52,8 @@ import { fetchOwnedActions } from "../../services/actions/club";
 import { add } from "ionicons/icons";
 import { RouteComponentProps } from "react-router";
 import { executeDelayed } from "../../helpers/async-helpers";
+import { log } from "console";
+import { exec } from "child_process";
 
 const { loading } = BuildForm({} as FormDescription<{ search: string }>);
 
@@ -70,27 +72,36 @@ const Members: React.FC<RouteComponentProps> = ({ history }) => {
   const thunkDispatch: ThunkDispatch<RootState, null, UserResult> =
     useDispatch();
   const dispatch = useDispatch();
+  console.log(members);
 
   useEffect(() => {
     if (authenticationInformation && owned) {
+      console.log("imin");
+
       fetchOwnedClub(token)
         .then((club) => dispatch(fetchOwnedActions.success(club)))
-        .then((data) => getUsersFromAPI(data.payload.memberIDs))
         .catch((err) => dispatch(fetchOwnedActions.failure(err)));
     }
   }, []);
 
-  const getUsersFromAPI = (listOfUserIDs: string[]) => {
+  useEffect(() => {
+    getUsersFromAPI(owned!.memberIDs);
+  }, [owned]);
+
+  const getUsersFromAPI = async (listOfUserIDs: string[]) => {
+    console.log("WTF", listOfUserIDs);
+
     let newUserList = [] as User[];
-    listOfUserIDs.forEach((user) => {
-      fetchUser(token, user)
+    listOfUserIDs.forEach(async (user) => {
+      await fetchUser(token, user)
+        .then((x) => dispatch(fetchUserActions.success(x)))
         .then((usr) => {
-          newUserList.push(usr);
+          newUserList.push(usr.payload);
           console.log(newUserList);
         })
-        .catch((err) => dispatch(fetchUserActions.success(err)));
+        .catch((err) => dispatch(fetchUserActions.failure(err)));
     });
-    setMembers(newUserList);
+    executeDelayed(100, () => setMembers(newUserList));
   };
 
   const NoValuesInfo = () =>
@@ -110,6 +121,8 @@ const Members: React.FC<RouteComponentProps> = ({ history }) => {
       .then((usr) => dispatch(fetchOwnedActions.success(usr)))
       .then(() => event.detail.complete())
       .catch((err) => dispatch(fetchOwnedActions.failure(err)));
+
+    getUsersFromAPI(owned!.memberIDs).then((x) => console.log(x));
   };
 
   const removeFromClub = (id: string) => {
@@ -180,11 +193,15 @@ const Members: React.FC<RouteComponentProps> = ({ history }) => {
                   {" "}
                   <IonCol>Gruppen:</IonCol>{" "}
                   <IonCol>
-                    {owned?.groups
-                      .filter((grp) => userGroups.includes(grp?.id ?? ""))
-                      .map((value) => {
-                        return <IonRow>{value.name}</IonRow>;
-                      })}
+                    {value.groups.length > 0 ? (
+                      owned?.groups
+                        .filter((grp) => value.groups.includes(grp?.id ?? ""))
+                        .map((value) => {
+                          return <IonRow key={value.name}>{value.name}</IonRow>;
+                        })
+                    ) : (
+                      <IonRow>Noch in keiner Gruppe!</IonRow>
+                    )}
                   </IonCol>
                 </IonRow>
               </IonGrid>

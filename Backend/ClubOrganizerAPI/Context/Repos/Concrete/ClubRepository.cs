@@ -135,7 +135,15 @@ namespace Context.Repos.Concrete
                     clubFromdb.MemberIDs.Remove(userFromDb.ID);
                     clubFromdb = await base.UpdateOneAsync(clubFromdb);
 
-                    userFromDb.Groups = userFromDb.Groups.ToList().Where(g => !clubFromdb.Groups.Contains(g)).ToList();
+                    List<string> listofGroups = new List<string>();
+
+                    foreach (Group group in clubFromdb.Groups)
+                    {
+                        listofGroups.Add(group.ID);
+                    }
+
+
+                   userFromDb.Groups = userFromDb.Groups.ToList().Where(g => !listofGroups.Contains(g)).ToList();
 
                     userFromDb.MyClubs.Remove(clubFromdb.ID);
                     await mongo.User.InsertOrUpdateOneAsync(userFromDb);
