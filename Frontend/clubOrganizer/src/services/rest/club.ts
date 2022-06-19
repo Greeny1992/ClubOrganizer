@@ -1,4 +1,4 @@
-import { Club, Clubs, Group, Event } from "../../types/types";
+import { Club, Clubs, Group, Event, CreateClub } from "../../types/types";
 import config from "./server-config";
 import axios from "axios";
 import { Storage } from "@capacitor/storage";
@@ -21,6 +21,24 @@ const timeout = 5000;
 export const createAuthenticationHeader = (token: string | null) => ({
   Authorization: `Bearer ${token}`,
 });
+
+export const createClub = (token: string | null, cl:CreateClub) =>
+  endpoint
+    .post<Club | ErrorMessage>(
+      `${config.getClubControllerURI}CreateClub`, cl,
+      { headers: createAuthenticationHeader(token) }
+    )
+    // Use this to simulate network latency
+    //.then(r => executeDelayed(3000, () => r))
+    .then((r) => {
+      if (r.status >= 300) {
+        const { message } = r.data as ErrorMessage;
+        throw new Error(message || r.statusText);
+      }
+      var returnval = r.data as Club;
+      console.log(returnval);
+      return returnval;
+    });
 
 export const fetchClub = (token: string | null, id: string) =>
   endpoint
@@ -75,7 +93,7 @@ export const fetchClubs = (token: string | null) =>
     });
 
 export const addMemberToClub = (token: string | null, clubId: string, userId: string) => 
-  endpoint.post<Club | ErrorMessage>(`${config.getClubControllerURI}AddMemberToClub?clubId=${clubId}&userId=${userId}`, {
+  endpoint.post<Club | ErrorMessage>(`${config.getClubControllerURI}AddMemberToClub?userId=${userId}&clubId=${clubId}`, {} ,{
     headers: createAuthenticationHeader(token)
   }).then((r) => {
     if (r.status >= 300) {
