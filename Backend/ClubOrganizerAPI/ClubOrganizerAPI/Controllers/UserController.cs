@@ -62,6 +62,7 @@ namespace ClubOrganizerAPI.Controllers
 
 
         [HttpGet("ListUsers")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<List<User>>> ListUsers()
@@ -86,6 +87,7 @@ namespace ClubOrganizerAPI.Controllers
 
 
         [HttpGet("GetUser")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<User>> GetUser([Required][FromQuery] String id)
@@ -109,6 +111,7 @@ namespace ClubOrganizerAPI.Controllers
         }
 
         [HttpPost("AddGroupToUser")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<User>> AddGroupToUser([Required][FromQuery] String groupId, [Required][FromQuery] String userId)
@@ -132,6 +135,7 @@ namespace ClubOrganizerAPI.Controllers
         }
 
         [HttpGet("GetClubsFromUser")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<List<Club>>> GetClubsFromUser()
@@ -171,6 +175,7 @@ namespace ClubOrganizerAPI.Controllers
         }
 
         [HttpGet("GetOwnedClub")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<Club>> GetOwnedClub()
@@ -207,6 +212,7 @@ namespace ClubOrganizerAPI.Controllers
         }
 
         [HttpGet("GetUserByEmail")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<User>> GetUserByEmail([Required][FromQuery] String email)
@@ -228,7 +234,7 @@ namespace ClubOrganizerAPI.Controllers
         }
 
         [HttpGet("ListMemberFromClub")]
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<User>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<List<User>>> ListMemberFromClub([Required][FromQuery] String clubId)

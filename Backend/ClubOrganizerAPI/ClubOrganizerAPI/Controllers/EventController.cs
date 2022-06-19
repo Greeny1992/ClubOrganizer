@@ -15,6 +15,7 @@ namespace ClubOrganizerAPI.Controllers
         MongoDBUnitOfWork mongo = MonitoringFacade.Instance.MongoDB;
 
         [HttpPost("CreatEvent")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Event))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<Event>> CreateEvent([Required][FromBody] Event eventData)
@@ -36,6 +37,7 @@ namespace ClubOrganizerAPI.Controllers
         }
 
         [HttpPatch("PatchEvent")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Event))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<Event>> PatchEvent([FromQuery][Required] String id, [Required][FromBody] Event eventData)
@@ -58,6 +60,7 @@ namespace ClubOrganizerAPI.Controllers
         }
 
         [HttpDelete("DeleteEvent")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Event))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<string>> DeleteEvent([FromQuery][Required] String id)
@@ -80,6 +83,7 @@ namespace ClubOrganizerAPI.Controllers
         }
 
         [HttpGet("ListEvents")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Event>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<List<Event>>> ListEvents()

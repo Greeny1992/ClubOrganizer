@@ -40,7 +40,7 @@ namespace UnitTests
             User user = new User();
             user.UserName = "AA";
             user.Email = "user@club.at";
-            user.Role = Role.User;
+            user.Role = Role.Admin;
             user.ValidTill = DateTime.MaxValue;
             user.Password = "123456";
             user.Firstname = "Andreas";

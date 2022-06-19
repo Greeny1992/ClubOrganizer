@@ -15,6 +15,7 @@ namespace ClubOrganizerAPI.Controllers
         MongoDBUnitOfWork mongo = MonitoringFacade.Instance.MongoDB;
 
         [HttpPost("CreatGroup")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Group))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<Group>> CreateGroup([Required][FromBody] Group groupData)
@@ -36,6 +37,7 @@ namespace ClubOrganizerAPI.Controllers
         }
 
         [HttpPatch("PatchGroup")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Group))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<Group>> PatchGroup([FromQuery][Required] String id, [Required][FromBody] Group groupData)
@@ -58,6 +60,7 @@ namespace ClubOrganizerAPI.Controllers
         }
 
         [HttpDelete("DeleteGroup")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Group))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<string>> DeleteGroup([FromQuery][Required] String id)
@@ -80,6 +83,7 @@ namespace ClubOrganizerAPI.Controllers
         }
 
         [HttpGet("ListGroups")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Group>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<List<Group>>> ListGroups()
