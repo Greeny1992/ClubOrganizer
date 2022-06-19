@@ -66,7 +66,7 @@ const App: React.FC = () => (
           exact={true}
         />
         <SecureRoute
-          path="/groups/edit"
+          path="/groups/edit/:id"
           component={RegisterGroup("edit")}
           exact={true}
         />
@@ -77,7 +77,7 @@ const App: React.FC = () => (
           exact={true}
         />
         <SecureRoute
-          path="/events/edit"
+          path="/events/edit/:id"
           component={RegisterEvents("edit")}
           exact={true}
         />

@@ -1,8 +1,8 @@
 class ServerConfig {
     private _host = "http://localhost:5010/api";
     private _loginURI = `${this._host}/User/Login`;
-    private _EventURI = `${this._host}/Club/CreateEventForClub/`;
-    private _GroupURI = `${this._host}/Club/CreateGroupForClub/`;
+    private _EventURI = `${this._host}/Event/`;
+    private _GroupURI = `${this._host}/Group/`;
     private _ClubURI = `${this._host}/Club/`;
     private _UserURI = `${this._host}/User/`;
 

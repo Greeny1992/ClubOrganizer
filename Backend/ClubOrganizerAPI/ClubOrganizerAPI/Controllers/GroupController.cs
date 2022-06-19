@@ -15,10 +15,9 @@ namespace ClubOrganizerAPI.Controllers
         MongoDBUnitOfWork mongo = MonitoringFacade.Instance.MongoDB;
 
         [HttpPost("CreatGroup")]
-        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Group))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<Group>> CreateEvent([Required][FromBody] Group groupData)
+        public async Task<ActionResult<Group>> CreateGroup([Required][FromBody] Group groupData)
         {
             Group gr = await mongo.Group.InsertOrUpdateOneAsync(groupData);
 
@@ -28,6 +27,50 @@ namespace ClubOrganizerAPI.Controllers
 
 
                 return gr;
+            }
+            else
+            {
+                return NotFound();
+            }
+
+        }
+
+        [HttpPatch("PatchGroup")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Group))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<Group>> PatchGroup([FromQuery][Required] String id, [Required][FromBody] Group groupData)
+        {
+            Group grp = await mongo.Group.FindByIdAsync(id);
+
+
+            if (grp != null)
+            {
+                Group patch = await mongo.Group.UpdateOneAsync(groupData);
+
+
+                return patch;
+            }
+            else
+            {
+                return NotFound();
+            }
+
+        }
+
+        [HttpDelete("DeleteGroup")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Group))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<string>> DeleteGroup([FromQuery][Required] String id)
+        {
+            Group grp = await mongo.Group.FindByIdAsync(id);
+
+
+            if (grp != null)
+            {
+                await mongo.Group.DeleteByIdAsync(id);
+
+
+                return grp.Name + "Deleted Successfully";
             }
             else
             {

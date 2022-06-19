@@ -40,6 +40,7 @@ import {
   fetchOwnedAction,
   fetchOwnedActions,
 } from "../../../services/actions/club";
+import { deleteGroup, patchGroup } from "../../../services/rest/groups";
 
 const form = (mode: string): FormDescription<Group> => ({
   name: "registrationGroups",
@@ -98,12 +99,45 @@ export default (
           console.log(selectedGroup);
         }
       }
-    });
+    }, []);
 
     const submit = (group: Group) => {
       dispatch(loading(true));
       if (owned != null) {
-        addGroupToClub(token, owned.id, group)
+        if (mode == "add") {
+          addGroupToClub(token, owned.id, group)
+            .then((result: {}) => {
+              fetchOwnedClub(token)
+                .then((usr) => dispatch(fetchOwnedActions.success(usr)))
+                .catch((err) => dispatch(fetchOwnedActions.failure(err)));
+              executeDelayed(100, () => history.replace("/groups"));
+            })
+            .catch((err: Error) => {
+              dispatch(error(err.message));
+            })
+            .finally(() => dispatch(loading(false)));
+        }
+
+        if (mode == "edit") {
+          patchGroup(token, match.params.id, group)
+            .then((result: {}) => {
+              fetchOwnedClub(token)
+                .then((usr) => dispatch(fetchOwnedActions.success(usr)))
+                .catch((err) => dispatch(fetchOwnedActions.failure(err)));
+              executeDelayed(100, () => history.replace("/groups"));
+            })
+            .catch((err: Error) => {
+              dispatch(error(err.message));
+            })
+            .finally(() => dispatch(loading(false)));
+        }
+      }
+    };
+
+    const deleteCurrentGroup = () => {
+      dispatch(loading(true));
+      if (owned != null) {
+        deleteGroup(token, match.params.id)
           .then((result: {}) => {
             fetchOwnedClub(token)
               .then((usr) => dispatch(fetchOwnedActions.success(usr)))
@@ -128,6 +162,18 @@ export default (
               {mode === "add" ? "New" : "Edit"} Group{" "}
               {mode === "edit" ? selectedGroup?.name : ""}
             </IonTitle>
+            {mode === "edit" && token != null ? (
+              <IonButtons slot="primary">
+                <IonButton
+                  className="deleteButton"
+                  onClick={() => deleteCurrentGroup()}
+                >
+                  Delete
+                </IonButton>
+              </IonButtons>
+            ) : (
+              <></>
+            )}
           </IonToolbar>
         </IonHeader>
         <IonContent>
