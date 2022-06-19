@@ -10,6 +10,11 @@ using System.Security.Claims;
 
 namespace ClubOrganizerAPI.Controllers
 {
+    public class GroupsModel
+    {
+        public List<string> groupIds { get; set; }
+    }
+
     [ApiController]
     [Route("api/[controller]")]
     public class UserController : ControllerBase
@@ -133,15 +138,15 @@ namespace ClubOrganizerAPI.Controllers
 
         }
 
-        [HttpPost("AddGroupToUser")]
+        [HttpPost("AddOrUpdateGroupsToUser")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<User>> AddGroupToUser([Required][FromQuery] String groupId, [Required][FromQuery] String userId)
+        public async Task<ActionResult<User>> AddGroupsToUser([Required][FromBody]  GroupsModel groups, [Required][FromQuery] String userId)
         {
 
 
-            User usr = await mongo.User.AddGroupToUser(userId, groupId);
+            User usr = await mongo.User.AddOrUpdateGroupsToUser(userId, groups.groupIds);
 
 
             if (usr != null)

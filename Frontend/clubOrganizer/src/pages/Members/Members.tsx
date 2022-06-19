@@ -96,7 +96,6 @@ const Members: React.FC<RouteComponentProps> = ({ history }) => {
   const NoValuesInfo = () =>
     !isLoading && owned?.memberIDs.length == 0 ? (
       <IonCard>
-        <img src="assets/images/img.png"></img>
         <IonCardHeader>
           <IonCardTitle>No Members found...</IonCardTitle>
         </IonCardHeader>
@@ -179,7 +178,14 @@ const Members: React.FC<RouteComponentProps> = ({ history }) => {
                 </IonRow>
                 <IonRow>
                   {" "}
-                  <IonCol>Gruppen:</IonCol> <IonCol>{userGroups}</IonCol>
+                  <IonCol>Gruppen:</IonCol>{" "}
+                  <IonCol>
+                    {owned?.groups
+                      .filter((grp) => userGroups.includes(grp?.id ?? ""))
+                      .map((value) => {
+                        return <IonRow>{value.name}</IonRow>;
+                      })}
+                  </IonCol>
                 </IonRow>
               </IonGrid>
             </IonCardContent>
