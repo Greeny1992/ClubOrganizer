@@ -127,7 +127,6 @@ export default (
         ) {
           const e = owned.events.find((x) => x.id == match.params.id);
           setSelectedEvent(e);
-          console.log(selectedEvent);
         }
       }
     }, []);

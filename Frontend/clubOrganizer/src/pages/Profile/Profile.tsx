@@ -108,8 +108,6 @@ const Profile: React.FC<RouteComponentProps<any>> = (props) => {
   const { Form, loading, error } = BuildForm(form());
   const thunkDispatch: ThunkDispatch<RootState, null, OwnedResult> =
     useDispatch();
-  console.log(ownedClub);
-  console.log(myclubs);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -128,7 +126,6 @@ const Profile: React.FC<RouteComponentProps<any>> = (props) => {
   }, [owned, myclubs, user]);
 
   const doRefresh = (event: CustomEvent<RefresherEventDetail>) => {
-    console.log("Begin async operation on Value List");
     fetchOwnedClub(token)
       .then((usr) => dispatch(fetchOwnedActions.success(usr)))
       .then(() => event.detail.complete())

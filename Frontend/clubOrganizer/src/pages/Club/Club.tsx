@@ -46,6 +46,7 @@ import "./Club.css";
 
 const ClubPage: React.FC<RouteComponentProps> = ({ history }) => {
   const { owned, myclubs } = useSelector((state: RootState) => state.clubs);
+  const { userDetail } = useSelector((state: RootState) => state.users);
   const token = useSelector(
     (s: RootState) => s.user.authenticationInformation!.token || ""
   );
@@ -58,11 +59,13 @@ const ClubPage: React.FC<RouteComponentProps> = ({ history }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!ownedClub) {
-      thunkDispatch(fetchOwnedAction()).then(() => {
-        setOwnedClub(owned);
-      });
-    }
+      if(userDetail?.ownedClub)
+        thunkDispatch(fetchOwnedAction()).then(() => {
+          setOwnedClub(owned);
+        });
+  }, [])
+
+  useEffect(() => {
     if (!userclubs) {
       thunkDispatch(fetchClubsAction()).then(() => {
         setUserClubs(myclubs);
@@ -70,19 +73,26 @@ const ClubPage: React.FC<RouteComponentProps> = ({ history }) => {
     }
   }, [owned, myclubs]);
 
+  useEffect(() => {
+    if(userDetail && userDetail.ownedClub) {
+    
+        thunkDispatch(fetchOwnedAction()).then(() => {
+          setOwnedClub(owned);
+        });
+    }
+  }, [userDetail])
+
   const onSetClubActive = (clubId: string) => {
     setSelectedClub(clubId);
     setActiveClub(clubId);
-
-    console.log("getActiveClub: ", clubId);
   };
 
   const doRefresh = (event: CustomEvent<RefresherEventDetail>) => {
-    console.log("Begin async operation on Value List");
-    fetchOwnedClub(token)
-      .then((usr) => dispatch(fetchOwnedActions.success(usr)))
-      .then(() => event.detail.complete())
-      .catch((err) => dispatch(fetchOwnedActions.failure(err)));
+    if(owned)
+      fetchOwnedClub(token)
+        .then((usr) => dispatch(fetchOwnedActions.success(usr)))
+        .then(() => event.detail.complete())
+        .catch((err) => dispatch(fetchOwnedActions.failure(err)));
 
     fetchClubs(token)
       .then((usr) => dispatch(fetchClubsActions.success(usr)))

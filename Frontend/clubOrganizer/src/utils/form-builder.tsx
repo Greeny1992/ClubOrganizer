@@ -202,7 +202,6 @@ export const BuildForm = <T extends { [index: string]: any }>
                     e => {
                         e.preventDefault();
                         const errors = validateForm();
-                        console.log(JSON.stringify(errors))
                         if (errors.length > 0) {
                             const { error } = createActions(name);
                             dispatch(error(`<p>Form Errors:<p><ul>${errors.map(e => e && "<li>" + e.name + ": " + e.error + "</li>")}</ul>`))

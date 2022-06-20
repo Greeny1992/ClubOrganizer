@@ -49,6 +49,8 @@ import { isNotExpired } from "../services/rest/security";
 import { RootState } from "../services/reducers";
 import { fetchClub, getActiveClub } from "../services/rest/club";
 import { Club } from "../types/types";
+import { fetchUser } from "../services/rest/users";
+import { fetchUserActions } from "../services/actions/users";
 
 interface AppPage {
   url: string;
@@ -89,30 +91,33 @@ const Menu: React.FC = () => {
   const { user, authenticationInformation } = useSelector(
     (state: RootState) => state.user
   );
+
+  const { userDetail } = useSelector(
+    (state: RootState) => state.users
+  );
   const { activeClubID } = useSelector((state: RootState) => state.activeCl);
   const [selectedClub, setSCID] = useState({} as Club);
   const dispatch = useDispatch();
   var securityItem = null;
 
   useEffect(() => {
-    console.log(activeClubID);
     if (
       authenticationInformation &&
       authenticationInformation.token !== "" &&
+      activeClubID != null &&
       activeClubID != ""
     ) {
-      console.log("OKDOKI");
       fetchClub(authenticationInformation?.token, activeClubID).then((c) => {
-        console.log(c);
-
         setSCID(c);
       });
-
-      console.log(selectedClub);
     }
   }, [activeClubID]);
 
   useEffect(() => {
+    if(userDetail === null && user?.id) {
+      fetchUser(authenticationInformation!.token, user.id).then(usr => dispatch(fetchUserActions.success(usr))).catch(err => fetchUserActions.failure(err))
+    }
+    console.log("userDetail", userDetail)
     if (isNotExpired(authenticationInformation)) {
       if (selectedClub.id && selectedClub.id !== "") {
         AddMenu({
@@ -122,7 +127,7 @@ const Menu: React.FC = () => {
           mdIcon: listSharp,
         });
       }
-      if (user && user.ownedClub && user.ownedClub !== "") {
+      if (userDetail && userDetail.ownedClub && userDetail.ownedClub !== "") {
         AddClubAdminMenu({
           title: "Events",
           url: "/events",
@@ -145,7 +150,7 @@ const Menu: React.FC = () => {
         });
       }
     }
-  }, [user, selectedClub]);
+  }, [user, userDetail, selectedClub]);
 
   if (isNotExpired(authenticationInformation)) {
     securityItem = {
@@ -159,7 +164,7 @@ const Menu: React.FC = () => {
       },
     };
 
-    AddMenu({
+    AddAdminMenu({
       title: "Profile",
       url: "/profile",
       iosIcon: addOutline,
@@ -172,14 +177,6 @@ const Menu: React.FC = () => {
       iosIcon: alarmOutline,
       mdIcon: alarmSharp,
     });
-    if (user?.role === "admin") {
-      AddAdminMenu({
-        title: "Users",
-        url: "/users",
-        iosIcon: personAddOutline,
-        mdIcon: personAddSharp,
-      });
-    }
   } else {
     securityItem = {
       title: "Login",
@@ -252,7 +249,11 @@ const Menu: React.FC = () => {
               </IonMenuToggle>
             );
           })}
-          {user?.ownedClub && (
+
+          
+        </IonList>
+        <div className="lock_bottom_admin_list">
+        {userDetail?.ownedClub && (
             <IonNote className="menu_note">{"Manage deinen Club"}</IonNote>
           )}
           {clubAdminFunctions.map((appPage, index) => {
@@ -277,9 +278,9 @@ const Menu: React.FC = () => {
               </IonMenuToggle>
             );
           })}
-          {user?.role === "admin" && (
-            <IonNote className="menu_note">{"Admin"}</IonNote>
-          )}
+          
+            <IonNote className="menu_note">{"Benutzer"}</IonNote>
+          
           {adminFunctions.map((appPage, index) => {
             return (
               <IonMenuToggle key={index} autoHide={false}>
@@ -302,7 +303,9 @@ const Menu: React.FC = () => {
               </IonMenuToggle>
             );
           })}
-        </IonList>
+
+        </div>
+        
         <IonMenuToggle className="lock_bottom" key={"sec2"} auto-hide="false">
           <IonItem
             routerLink={securityItem.url}

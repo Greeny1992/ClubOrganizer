@@ -130,6 +130,12 @@ ion-item.selected {
   bottom: 0px
 }
 
+.lock_bottom_admin_list {
+  position: fixed;
+  bottom: 50px;
+  width: 95%;
+}
+
 .centered{
   width: 100%;
   text-align: center;

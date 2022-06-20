@@ -35,7 +35,6 @@ import "./theme/variables.css";
 import { SecureRoute } from "./components/SecurePage";
 import Login from "./pages/Login/Login";
 import Menu from "./components/Menu";
-import Users from "./pages/AdminPages/Users/Users";
 import RegisterGroup from "./pages/AdminPages/Groups/RegisterGroup";
 import ClubPage from "./pages/Club/Club";
 import Members from "./pages/Members/Members";
@@ -88,7 +87,6 @@ const App: React.FC = () => (
           component={RegisterEvents("edit")}
           exact={true}
         />
-        <SecureRoute path="/users" component={Users} exact={true} />
         <Route path="/" exact={true}>
           <Redirect to="/profile" />
         </Route>

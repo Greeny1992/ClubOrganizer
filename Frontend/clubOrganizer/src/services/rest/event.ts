@@ -26,7 +26,6 @@ export const patchEvent = (token:string | null, eventID: string, event:Event) =>
       throw new Error(message || r.statusText);
     }
     var returnval = r.data as Event;
-    console.log(returnval);
     return returnval;
   });
 
@@ -51,7 +50,6 @@ export const patchEvent = (token:string | null, eventID: string, event:Event) =>
       throw new Error(message || r.statusText);
     }
     var returnval = r.data as Club;
-    console.log(returnval);
     return returnval;
   });
 
@@ -64,7 +62,6 @@ export const patchEvent = (token:string | null, eventID: string, event:Event) =>
       throw new Error(message || r.statusText);
     }
     var returnval = r.data as Club;
-    console.log(returnval);
     return returnval;
   });
 

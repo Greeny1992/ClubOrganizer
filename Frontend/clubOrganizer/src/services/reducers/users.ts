@@ -8,7 +8,7 @@ const init : UsersState =
 {
     isLoading : false,
     errorMessage :"",
-    user: null,
+    userDetail: null,
     userlist: []
 }
 
@@ -16,7 +16,7 @@ const init : UsersState =
 export interface UsersState {
     isLoading: boolean;
     errorMessage: string;
-    user : User | null;
+    userDetail : User | null;
     userlist : UserList | null;
 }
 
@@ -32,4 +32,4 @@ export const users = createReducer<UsersState, AnyAction>(init)
 .handleAction(fetchUserActions.failure, (state, action) =>
     ({ ...state, isLoading: false,  errorMessage: action.payload.message }))
 .handleAction(fetchUserActions.success, (state, action) =>
-    ({ ...state, isLoading: false,  user: action.payload}))
+    ({ ...state, isLoading: false,  userDetail: action.payload}))

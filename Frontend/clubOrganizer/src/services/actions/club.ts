@@ -3,8 +3,7 @@ import {createAction, createAsyncAction} from 'typesafe-actions';
 import {ThunkAction} from "redux-thunk";
 import {RootState} from "../reducers";
 import {AnyAction} from "redux";
-import {fetchUser, fetchUsers} from "../rest/users";
-import { addGroupToClub, fetchClub, fetchClubs, fetchOwnedClub, getActiveClub } from "../rest/club";
+import { addGroupToClub, fetchClubs, fetchOwnedClub, getActiveClub } from "../rest/club";
 import { ActiveClub } from "../reducers/club";
 import { group } from "console";
 

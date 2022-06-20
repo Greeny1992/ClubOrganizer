@@ -17,9 +17,9 @@ export const createAuthenticationHeader = (token: string | null) => ({
   Authorization: `Bearer ${token}`,
 });
 
-export const fetchUser = (token: string | null, name: string) =>
+export const fetchUser = (token: string | null, id: string) =>
   endpoint
-    .get<User | ErrorMessage>(`${config.getUserURI}GetUser?id=${name}`, {
+    .get<User | ErrorMessage>(`${config.getUserURI}GetUser?id=${id}`, {
       headers: createAuthenticationHeader(token),
     })
     .then((r) => {
@@ -28,7 +28,6 @@ export const fetchUser = (token: string | null, name: string) =>
         throw new Error(message || r.statusText);
       }
       var returnval = r.data as User;
-      console.log(returnval);
       return returnval;
     });
 
@@ -43,7 +42,6 @@ export const fetchUser = (token: string | null, name: string) =>
           throw new Error(message || r.statusText);
         }
         var returnval = r.data as User;
-        console.log(returnval);
         return returnval;
       });
 
@@ -58,7 +56,6 @@ export const fetchUserByEmail = (token: string | null, email: string) =>
           throw new Error(message || r.statusText);
         }
         var returnval = r.data as User;
-        console.log(returnval);
         return returnval;
       });
 
@@ -67,15 +64,12 @@ export const fetchUsers = (token: string | null) =>
     .get<UserList | ErrorMessage>(`${config.getUserURI}ListUsers`, {
       headers: createAuthenticationHeader(token),
     })
-    // Use this to simulate network latency
-    //.then(r => executeDelayed(3000, () => r))
     .then((r) => {
       if (r.status >= 300) {
         const { message } = r.data as ErrorMessage;
         throw new Error(message || r.statusText);
       }
       var returnval = r.data as UserList;
-      console.log(returnval);
       return returnval;
     });
 
@@ -86,15 +80,12 @@ export const fetchMembersFromClub = (token: string | null, clubId: string) =>
 endpoint.get<UserList | ErrorMessage>(`${config.getUserURI}ListMemberFromClub?clubId=${clubId}`, {
     headers: createAuthenticationHeader(token),
   })
-  // Use this to simulate network latency
-  //.then(r => executeDelayed(3000, () => r))
   .then((r) => {
     if (r.status >= 300) {
       const { message } = r.data as ErrorMessage;
       throw new Error(message || r.statusText);
     }
     var returnval = r.data as UserList;
-    console.log(returnval);
     return returnval;
   });
 
@@ -108,6 +99,5 @@ endpoint.get<UserList | ErrorMessage>(`${config.getUserURI}ListMemberFromClub?cl
       throw new Error(message || r.statusText);
     }
     var returnval = r.data as User;
-    console.log(returnval);
     return returnval;
   });

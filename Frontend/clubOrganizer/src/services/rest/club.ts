@@ -36,7 +36,7 @@ export const createClub = (token: string | null, cl:CreateClub) =>
         throw new Error(message || r.statusText);
       }
       var returnval = r.data as Club;
-      console.log(returnval);
+
       return returnval;
     });
 
@@ -54,7 +54,7 @@ export const fetchClub = (token: string | null, id: string) =>
         throw new Error(message || r.statusText);
       }
       var returnval = r.data as Club;
-      console.log(returnval);
+
       return returnval;
     });
 
@@ -63,15 +63,13 @@ export const fetchOwnedClub = (token: string | null) =>
     .get<Club | ErrorMessage>(`${config.getUserURI}GetOwnedClub`, {
       headers: createAuthenticationHeader(token),
     })
-    // Use this to simulate network latency
-    //.then(r => executeDelayed(3000, () => r))
     .then((r) => {
       if (r.status >= 300) {
         const { message } = r.data as ErrorMessage;
         throw new Error(message || r.statusText);
       }
       var returnval = r.data as Club;
-      console.log(returnval);
+
       return returnval;
     });
 
@@ -88,7 +86,7 @@ export const fetchClubs = (token: string | null) =>
         throw new Error(message || r.statusText);
       }
       var returnval = r.data as Clubs;
-      console.log(returnval);
+
       return returnval;
     });
 
@@ -101,7 +99,6 @@ export const addMemberToClub = (token: string | null, clubId: string, userId: st
       throw new Error(message || r.statusText);
     }
     var returnval = r.data as Club;
-    console.log(returnval);
     return returnval;
   });
 
@@ -114,7 +111,6 @@ export const addMemberToClub = (token: string | null, clubId: string, userId: st
       throw new Error(message || r.statusText);
     }
     var returnval = r.data as Club;
-    console.log(returnval);
     return returnval;
   });
 
@@ -127,7 +123,6 @@ export const addMemberToClub = (token: string | null, clubId: string, userId: st
       throw new Error(message || r.statusText);
     }
     var returnval = r.data as Club;
-    console.log(returnval);
     return returnval;
   });
 
@@ -140,7 +135,6 @@ export const addMemberToClub = (token: string | null, clubId: string, userId: st
       throw new Error(message || r.statusText);
     }
     var returnval = r.data as Club;
-    console.log(returnval);
     return returnval;
   });
 
@@ -148,10 +142,7 @@ export const addMemberToClub = (token: string | null, clubId: string, userId: st
 
 export const setActiveClub = (id: string) => {
   Storage.set({ key: "activeClub", value: id });
-  store.dispatch(activeC({ activeClubID: id }));
-
-  console.log("stored: ", id);
-  
+  store.dispatch(activeC({ activeClubID: id }));  
 };
 
 const _getActiveClub = () =>

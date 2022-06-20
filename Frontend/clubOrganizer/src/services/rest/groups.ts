@@ -26,7 +26,6 @@ export const patchGroup = (token:string | null, groupID: string, event:Group) =>
       throw new Error(message || r.statusText);
     }
     var returnval = r.data as Group;
-    console.log(returnval);
     return returnval;
   });
 

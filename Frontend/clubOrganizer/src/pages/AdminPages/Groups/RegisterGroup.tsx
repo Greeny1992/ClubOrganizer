@@ -81,8 +81,6 @@ export default (
     const { Form, loading, error } = BuildForm(form(mode));
 
     useEffect(() => {
-      console.log(owned?.groups.find((x) => x.id == match.params.id));
-
       if (
         mode == "edit" &&
         (!owned || owned.groups.find((x) => x.id == match.params.id) != null)
@@ -96,7 +94,6 @@ export default (
         ) {
           const g = owned.groups.find((x) => x.id == match.params.id);
           setSelectedGroup(g);
-          console.log(selectedGroup);
         }
       }
     }, []);

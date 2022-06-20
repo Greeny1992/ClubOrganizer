@@ -18,7 +18,6 @@ const AppReducer = combineReducers({
 
 loadUserData()
     .then(info =>  {
-        console.log('Loaded data: ' + JSON.stringify(info));
         return info.user && info.authentication ? store.dispatch(loggedIn({user: info.user, authenticationInformation: info.authentication})): false
     })
     .catch(e => console.log(e))

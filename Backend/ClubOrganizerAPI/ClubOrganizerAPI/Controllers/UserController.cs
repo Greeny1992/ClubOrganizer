@@ -176,20 +176,17 @@ namespace ClubOrganizerAPI.Controllers
                 usr = await mongo.User.FindByIdAsync(userId);
             }
 
-            
-
-
             if (usr != null)
             {
                 List<string> myClubs = (List<string>)usr.MyClubs;
                 List<Club> returnClubs = new List<Club>();
                 if (myClubs.Count() > 0)
                 {
-                    
-                    myClubs.ForEach(async (club) =>
+                    foreach(string cl in myClubs)
                     {
-                        returnClubs.Add(await mongo.Club.FindByIdAsync(club));
-                    });
+                        var tempClub = await mongo.Club.FindByIdAsync(cl);
+                        returnClubs.Add(tempClub);
+                    }
                 }
 
 

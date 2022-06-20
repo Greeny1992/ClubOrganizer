@@ -31,10 +31,10 @@ import {
   FieldDescriptionType,
   FormDescription,
 } from "../../utils/form-builder";
-import { register } from "../../services/rest/users";
+import { fetchUser, register } from "../../services/rest/users";
 import { RootState } from "../../services/reducers";
 
-import { fetchUserAction } from "../../services/actions/users";
+import { fetchUserAction, fetchUserActions } from "../../services/actions/users";
 import { createClub } from "../../services/rest/club";
 
 const form = (mode: string): FormDescription<CreateClub> => ({
@@ -63,6 +63,9 @@ export default (
     const token = useSelector(
       (s: RootState) => s.user.authenticationInformation!.token || ""
     );
+    const user = useSelector(
+      (s: RootState) => s.user.user
+    )
     const { Form, loading, error } = BuildForm(form(mode));
 
     useEffect(() => {});
@@ -71,6 +74,9 @@ export default (
       dispatch(loading(true));
       createClub(token, cl)
         .then((result: {}) => {
+          if(user?.id) {
+            fetchUser(token, user.id).then(usr => dispatch(fetchUserActions.success(usr))).catch(err => fetchUserActions.failure(err))
+          }
           executeDelayed(100, () => history.replace("/club"));
         })
         .catch((err: Error) => {

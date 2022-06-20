@@ -15,17 +15,7 @@ const timeout = 5000;
 export const login = (loginData: LoginData) =>
     endpoint.post<AuthenticationResponse>('User/Login', loginData, {timeout})
         .then(
-            ({data: {authenticationInformation, user}}) => {
-                console.log(authenticationInformation);
-                if(authenticationInformation && user?.ownedClub){
-                    fetchClub(authenticationInformation.token, user.ownedClub).then(club =>
-                        Storage.set({key: 'ownedClub', value: JSON.stringify(( club && typeof club === 'object') ? club : {})})
-                    )
-                }
-                else{
-                    Storage.set({key: 'ownedClub', value: ''})
-                }
-                
+            ({data: {authenticationInformation, user}}) => {                
                 return Promise.all([
                     user,
                     authenticationInformation,
@@ -49,7 +39,6 @@ export const isNotExpired = (token: AuthenticationInformation | null | undefined
     }
     else
     {
-        console.log("Token is null or expired");
         return false;
     }
 

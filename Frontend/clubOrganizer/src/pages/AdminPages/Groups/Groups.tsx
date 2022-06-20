@@ -75,7 +75,6 @@ const Groups: React.FC<RouteComponentProps> = ({ history }) => {
     );
 
   const doRefresh = (event: CustomEvent<RefresherEventDetail>) => {
-    console.log("Begin async operation on Value List");
     fetchOwnedClub(token)
       .then((usr) => dispatch(fetchOwnedActions.success(usr)))
       .then(() => event.detail.complete())
@@ -89,7 +88,7 @@ const Groups: React.FC<RouteComponentProps> = ({ history }) => {
           <IonCard
             className="userCard"
             key={value.id}
-            onClick={() => history.push("/groups/edit/" + value.id)}
+            
           >
             <IonCardHeader>
               <IonCardTitle>Gruppe: {value.name}</IonCardTitle>
@@ -101,8 +100,10 @@ const Groups: React.FC<RouteComponentProps> = ({ history }) => {
                     <IonCol>{value.description}</IonCol>
                   </IonRow>
                 </IonGrid>
+                <IonButton onClick={() => history.push("/groups/edit/" + value.id)}>Bearbeiten</IonButton>
               </IonCardContent>
             </IonCardHeader>
+
           </IonCard>
         );
       });

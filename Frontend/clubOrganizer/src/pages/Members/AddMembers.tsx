@@ -74,7 +74,6 @@ const AddMembers: React.FC<RouteComponentProps> = ({ history }) => {
     if (authenticationInformation && ownedClub) {
       fetchMembersFromClub(authenticationInformation?.token, ownedClub).then(
         (members) => {
-          console.log("members", members);
           setCurrentMembers(members);
         }
       );

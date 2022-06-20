@@ -78,7 +78,6 @@ const Events: React.FC<RouteComponentProps> = ({ history }) => {
     );
 
   const doRefresh = (event: CustomEvent<RefresherEventDetail>) => {
-    console.log("Begin async operation on Value List");
     fetchOwnedClub(token)
       .then((usr) => dispatch(fetchOwnedActions.success(usr)))
       .then(() => event.detail.complete())

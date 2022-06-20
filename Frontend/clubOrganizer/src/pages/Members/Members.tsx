@@ -72,11 +72,11 @@ const Members: React.FC<RouteComponentProps> = ({ history }) => {
   const thunkDispatch: ThunkDispatch<RootState, null, UserResult> =
     useDispatch();
   const dispatch = useDispatch();
-  console.log(members);
+
 
   useEffect(() => {
     if (authenticationInformation && owned) {
-      console.log("imin");
+
 
       fetchOwnedClub(token)
         .then((club) => dispatch(fetchOwnedActions.success(club)))
@@ -89,7 +89,7 @@ const Members: React.FC<RouteComponentProps> = ({ history }) => {
   }, [owned]);
 
   const getUsersFromAPI = async (listOfUserIDs: string[]) => {
-    console.log("WTF", listOfUserIDs);
+
 
     let newUserList = [] as User[];
     listOfUserIDs.forEach(async (user) => {
@@ -97,7 +97,7 @@ const Members: React.FC<RouteComponentProps> = ({ history }) => {
         .then((x) => dispatch(fetchUserActions.success(x)))
         .then((usr) => {
           newUserList.push(usr.payload);
-          console.log(newUserList);
+
         })
         .catch((err) => dispatch(fetchUserActions.failure(err)));
     });
@@ -116,13 +116,13 @@ const Members: React.FC<RouteComponentProps> = ({ history }) => {
     );
 
   const doRefresh = (event: CustomEvent<RefresherEventDetail>) => {
-    console.log("Begin async operation on Value List");
+
     fetchOwnedClub(token)
       .then((usr) => dispatch(fetchOwnedActions.success(usr)))
       .then(() => event.detail.complete())
       .catch((err) => dispatch(fetchOwnedActions.failure(err)));
 
-    getUsersFromAPI(owned!.memberIDs).then((x) => console.log(x));
+    getUsersFromAPI(owned!.memberIDs)
   };
 
   const removeFromClub = (id: string) => {

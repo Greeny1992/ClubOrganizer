@@ -59,8 +59,6 @@ const Termine: React.FC<RouteComponentProps> = ({ history }) => {
   );
   const userId = useSelector((s: RootState) => s.user.user?.id || "")
   const dispatch = useDispatch();
-  console.log(selectedClub);
-  console.log(activeClubID);
 
   useEffect(() => {
     dispatch(fetchOwnedAction());
@@ -82,7 +80,6 @@ const Termine: React.FC<RouteComponentProps> = ({ history }) => {
     );
 
   const doRefresh = (event: CustomEvent<RefresherEventDetail>) => {
-    console.log("Begin async operation on Value List");
     fetchClub(token, activeClubID)
       .then((data) => setSelectedClub(data))
       .then(() => event.detail.complete())
