@@ -117,7 +117,6 @@ const Menu: React.FC = () => {
     if(userDetail === null && user?.id) {
       fetchUser(authenticationInformation!.token, user.id).then(usr => dispatch(fetchUserActions.success(usr))).catch(err => fetchUserActions.failure(err))
     }
-    console.log("userDetail", userDetail)
     if (isNotExpired(authenticationInformation)) {
       if (selectedClub.id && selectedClub.id !== "") {
         AddMenu({
